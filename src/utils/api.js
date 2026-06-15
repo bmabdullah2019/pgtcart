@@ -1,8 +1,22 @@
-export const BACKEND_URL = typeof window === "undefined"
-  ? (process.env.BACKEND_URL || "http://localhost/react%20ecom/aminreact")
-  : (window.location.origin.includes("localhost")
-      ? "http://localhost/react%20ecom/aminreact"
-      : "https://admin.pgtcart.com");
+const IS_SERVER = typeof window === "undefined";
+
+export const BACKEND_URL = (() => {
+  if (process.env.NEXT_PUBLIC_BACKEND_URL) return process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (process.env.BACKEND_URL) return process.env.BACKEND_URL;
+
+  if (!IS_SERVER) {
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+      return "http://localhost/react%20ecom/aminreact";
+    }
+    return "https://admin.pgtcart.com";
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost/react%20ecom/aminreact";
+  }
+  return "https://admin.pgtcart.com";
+})();
+
 export const API_BASE = `${BACKEND_URL}/api/v1`;
 
 export function getImageUrl(path) {
