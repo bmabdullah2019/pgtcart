@@ -2,7 +2,7 @@ export const BACKEND_URL = typeof window === "undefined"
   ? (process.env.BACKEND_URL || "http://localhost/react%20ecom/aminreact")
   : (window.location.origin.includes("localhost")
       ? "http://localhost/react%20ecom/aminreact"
-      : "https://api.pgtcart.com");
+      : "https://admin.pgtcart.com");
 export const API_BASE = `${BACKEND_URL}/api/v1`;
 
 export function getImageUrl(path) {
