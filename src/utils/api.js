@@ -30,13 +30,16 @@ export function getImageUrl(path) {
   // For local development on Laragon (port 80/443), we need the "public/" prefix to access assets 
   // since the local root URL maps to the project root, not the public/ folder.
   // For production or php artisan serve, the URL maps directly to the public folder, so we strip "public/".
-  if (BACKEND_URL.includes("localhost") && !BACKEND_URL.includes("localhost:8000")) {
-    if (!cleanPath.startsWith("public/")) {
-      cleanPath = "public/" + cleanPath;
-    }
-  } else {
+  // Note: On production (https://admin.pgtcart.com), the server maps to the project root, so it also needs the "public/" prefix.
+  const mapsToPublicFolder = BACKEND_URL.includes("localhost:8000") || BACKEND_URL.includes("127.0.0.1:8000");
+
+  if (mapsToPublicFolder) {
     if (cleanPath.startsWith("public/")) {
       cleanPath = cleanPath.substring(7);
+    }
+  } else {
+    if (!cleanPath.startsWith("public/")) {
+      cleanPath = "public/" + cleanPath;
     }
   }
   return `${BACKEND_URL}/${cleanPath}`;
