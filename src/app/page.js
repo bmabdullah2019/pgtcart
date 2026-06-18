@@ -193,60 +193,53 @@ export default async function Home() {
         {categoryProducts?.map(
           (cat) =>
             cat.products?.length > 0 && (
-              <section key={cat.id} className="flex flex-col gap-4">
+              <section key={cat.id} className="bg-white border border-gray-200 rounded-lg shadow-xs overflow-hidden flex flex-col">
                 {/* Section Header */}
-                <div className="flex justify-between items-end border-b-2 border-gray-100 pb-2">
-                  <h2 className="text-base sm:text-lg font-extrabold uppercase tracking-wide text-gray-900 flex items-center gap-2">
-                    <span className="w-2.5 h-6 bg-[#ffd300] rounded-xs inline-block"></span>
-                    <span>{cat.name}</span>
+                <div className="flex justify-between items-center px-4 py-3 bg-white">
+                  <h2 className="text-sm sm:text-base font-bold text-gray-950 tracking-wide">
+                    {cat.name}
                   </h2>
-                  <Link
-                    href={`/category/${cat.slug}`}
-                    className="text-xs font-bold text-gray-800 hover:text-[#c29900] hover:underline uppercase tracking-wider"
-                  >
-                    View All
-                  </Link>
+                  <div className="flex items-center gap-1.5">
+                    <button className="w-7 h-7 rounded border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer" title="Previous">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                      </svg>
+                    </button>
+                    <button className="w-7 h-7 rounded border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer" title="Next">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Section Layout: Products Left, Banner Right */}
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
-                  {/* Products Grid (Takes 4/5 columns on desktop) */}
-                  <div className="lg:col-span-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    {cat.products.slice(0, 8).map((prod) => (
-                      <ProductCard key={prod.id} product={prod} />
-                    ))}
-                  </div>
+                {/* Brand Color Horizontal Separator Line */}
+                <div className="h-[3px] bg-[#ffd300] w-full" />
 
-                  {/* Category Banner Card (Takes 1/5 columns on desktop, hidden on mobile) */}
-                  <div className="hidden lg:flex lg:col-span-1 relative rounded-lg overflow-hidden border border-gray-100 group shadow-xs bg-gray-50 flex-col justify-end min-h-[350px]">
-                    <Link href={`/category/${cat.slug}`} className="absolute inset-0 z-0">
+                {/* Section Content Layout: Left Banner, Right Products Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-5 items-stretch">
+                  {/* Category Banner Column (1/5 width on desktop, hidden on mobile) */}
+                  <div className="hidden lg:flex lg:col-span-1 relative bg-white flex-col justify-between overflow-hidden border-r border-gray-100 min-h-[350px]">
+                    <Link href={`/category/${cat.slug}`} className="relative block w-full h-full flex-grow group overflow-hidden">
                       <img
                         src={getImageUrl(cat.home_banner || cat.image)}
                         alt={cat.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                         loading="lazy"
                       />
                       {/* Dark overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300" />
                     </Link>
 
-                    {/* Brand-colored Banner Overlay at Bottom */}
-                    <div className="relative z-10 w-full p-4 mt-auto">
-                      <div className="bg-black/90 backdrop-blur-xs rounded-xl p-3 flex flex-col items-center justify-center border border-white/10 shadow-lg text-center">
-                        <span className="text-[10px] font-black uppercase text-gray-300 tracking-widest mb-2">
-                          {cat.name}
-                        </span>
-                        <Link
-                          href={`/category/${cat.slug}`}
-                          className="w-full py-2 bg-[#ffd300] hover:bg-white text-black font-extrabold text-[11px] uppercase tracking-widest rounded-full text-center transition-all duration-300 transform group-hover:scale-[1.03] shadow-md flex items-center justify-center gap-1"
-                        >
-                          <span>Shop Now</span>
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                          </svg>
-                        </Link>
-                      </div>
-                    </div>
+                    {/* Brand-colored Banner Bar at Bottom */}
+                    <div className="h-[12px] bg-[#ffd300] w-full" />
+                  </div>
+
+                  {/* Products Grid (4/5 width on desktop, full width on mobile) */}
+                  <div className="lg:col-span-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-0 bg-white">
+                    {cat.products.slice(0, 8).map((prod) => (
+                      <ProductCard key={prod.id} product={prod} />
+                    ))}
                   </div>
                 </div>
               </section>
