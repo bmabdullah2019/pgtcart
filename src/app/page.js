@@ -8,10 +8,10 @@ import ColumnProductRow from "../components/ColumnProductRow";
 
 // Server side data fetching function
 async function getStorefrontData() {
-  const fetchAPI = async (endpoint) => {
+  const fetchAPI = async (endpoint, revalidate = 60) => {
     try {
       const res = await fetch(`${API_BASE}/${endpoint}`, {
-        cache: "no-store", // dynamic rendering, no caching for live ERP sync
+        next: { revalidate },
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const json = await res.json();
@@ -28,10 +28,10 @@ async function getStorefrontData() {
     hotdeals,
     categoryProducts,
   ] = await Promise.all([
-    fetchAPI("slider"),
-    fetchAPI("category-menu"),
-    fetchAPI("hotdeal-product"),
-    fetchAPI("homepage-product"),
+    fetchAPI("slider", 300),        // sliders rarely change
+    fetchAPI("category-menu", 300), // categories are stable
+    fetchAPI("hotdeal-product", 60), // deals update frequently
+    fetchAPI("homepage-product", 60), // products change often
   ]);
 
   return {

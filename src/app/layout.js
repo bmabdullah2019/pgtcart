@@ -4,6 +4,7 @@ import { API_BASE } from "../utils/api";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/CartContext";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata = {
   title: "Sakura e-Commerce Store",
@@ -23,10 +24,10 @@ export const metadata = {
 };
 
 async function getGlobalData() {
-  const fetchAPI = async (endpoint) => {
+  const fetchAPI = async (endpoint, revalidate = 300) => {
     try {
       const res = await fetch(`${API_BASE}/${endpoint}`, {
-        cache: "no-store",
+        next: { revalidate },
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const json = await res.json();
@@ -82,9 +83,11 @@ export default async function RootLayout({ children }) {
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900 font-sans">
         <CartProvider>
           <Header config={config} contact={contact} categories={categories} />
-          <main className="flex-grow max-w-7xl mx-auto w-full px-4 md:px-8 py-6 flex flex-col gap-8">
-            {children}
-          </main>
+          <Suspense fallback={<div className="w-full animate-pulse"><div className="h-[400px] bg-gray-100 rounded-lg"></div></div>}>
+            <main className="flex-grow max-w-7xl mx-auto w-full px-4 md:px-8 py-6 flex flex-col gap-8">
+              {children}
+            </main>
+          </Suspense>
           <Footer
             config={config}
             contact={contact}
