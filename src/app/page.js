@@ -216,10 +216,17 @@ export default async function Home() {
                 {/* Brand Color Horizontal Separator Line */}
                 <div className="h-[3px] bg-[#ffd300] w-full" />
 
-                {/* Section Content Layout: Left Banner, Right Products Grid */}
+                {/* Section Content Layout: Left Products Grid, Right Banner */}
                 <div className="grid grid-cols-1 lg:grid-cols-5 items-stretch">
+                  {/* Products Grid (4/5 width on desktop, full width on mobile) */}
+                  <div className="lg:col-span-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-0 bg-white">
+                    {cat.products.slice(0, 8).map((prod) => (
+                      <ProductCard key={prod.id} product={prod} />
+                    ))}
+                  </div>
+
                   {/* Category Banner Column (1/5 width on desktop, hidden on mobile) */}
-                  <div className="hidden lg:flex lg:col-span-1 relative bg-white flex-col justify-between overflow-hidden border-r border-gray-100 min-h-[350px]">
+                  <div className="hidden lg:flex lg:col-span-1 relative bg-white flex-col justify-between overflow-hidden border-l border-gray-100 min-h-[350px]">
                     <Link href={`/category/${cat.slug}`} className="relative block w-full h-full flex-grow group overflow-hidden">
                       <img
                         src={getImageUrl(cat.home_banner || cat.image)}
@@ -233,13 +240,6 @@ export default async function Home() {
 
                     {/* Brand-colored Banner Bar at Bottom */}
                     <div className="h-[12px] bg-[#ffd300] w-full" />
-                  </div>
-
-                  {/* Products Grid (4/5 width on desktop, full width on mobile) */}
-                  <div className="lg:col-span-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-0 bg-white">
-                    {cat.products.slice(0, 8).map((prod) => (
-                      <ProductCard key={prod.id} product={prod} />
-                    ))}
                   </div>
                 </div>
               </section>
