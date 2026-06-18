@@ -189,11 +189,11 @@ export default function Footer({ config, contact, leftMenu, rightMenu, socialLin
 
       {/* Footer Bottom Payment strip */}
       <div className="border-t border-white/10 pt-6 px-4 md:px-8 text-center flex flex-col items-center gap-4">
-        <div>
+        <div className="w-full flex justify-center px-2">
           <img
-            src={getImageUrl("public/frontEnd/images/onlinepay.png")}
+            src="/payment-gateways.jpg"
             alt="Payment methods"
-            className="max-h-8 w-auto object-contain bg-white rounded p-1"
+            className="w-full max-w-5xl h-auto object-contain bg-white rounded-md p-2"
           />
         </div>
         <p className="text-gray-400 text-xs tracking-wider">

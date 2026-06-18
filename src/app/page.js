@@ -85,9 +85,9 @@ export default async function Home() {
               </svg>
               <span>Categories</span>
             </h3>
-            <div className="flex flex-col pt-2 gap-1 text-xs">
+            <div className="flex flex-col pt-2 divide-y divide-gray-100 text-xs">
               {categories?.slice(0, 11).map((cat) => (
-                <div key={cat.id} className="relative group/side font-semibold text-gray-700 hover:text-[#c29900]">
+                <div key={cat.id} className="relative group/side font-semibold text-gray-700 hover:text-[#c29900] py-0.5">
                   <Link
                     href={`/category/${cat.slug}`}
                     className="flex justify-between items-center py-2 px-1 hover:bg-amber-50 rounded transition-colors"
@@ -194,9 +194,10 @@ export default async function Home() {
           (cat) =>
             cat.products?.length > 0 && (
               <section key={cat.id} className="flex flex-col gap-4">
+                {/* Section Header */}
                 <div className="flex justify-between items-end border-b-2 border-gray-100 pb-2">
                   <h2 className="text-base sm:text-lg font-extrabold uppercase tracking-wide text-gray-900 flex items-center gap-2">
-                    <span className="w-2.5 h-6 bg-black rounded-xs inline-block"></span>
+                    <span className="w-2.5 h-6 bg-[#ffd300] rounded-xs inline-block"></span>
                     <span>{cat.name}</span>
                   </h2>
                   <Link
@@ -206,10 +207,47 @@ export default async function Home() {
                     View All
                   </Link>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {cat.products.slice(0, 5).map((prod) => (
-                    <ProductCard key={prod.id} product={prod} />
-                  ))}
+
+                {/* Section Layout: Products Left, Banner Right */}
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
+                  {/* Products Grid (Takes 4/5 columns on desktop) */}
+                  <div className="lg:col-span-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    {cat.products.slice(0, 8).map((prod) => (
+                      <ProductCard key={prod.id} product={prod} />
+                    ))}
+                  </div>
+
+                  {/* Category Banner Card (Takes 1/5 columns on desktop, hidden on mobile) */}
+                  <div className="hidden lg:flex lg:col-span-1 relative rounded-lg overflow-hidden border border-gray-100 group shadow-xs bg-gray-50 flex-col justify-end min-h-[350px]">
+                    <Link href={`/category/${cat.slug}`} className="absolute inset-0 z-0">
+                      <img
+                        src={getImageUrl(cat.home_banner || cat.image)}
+                        alt={cat.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                      {/* Dark overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent transition-opacity duration-300" />
+                    </Link>
+
+                    {/* Brand-colored Banner Overlay at Bottom */}
+                    <div className="relative z-10 w-full p-4 mt-auto">
+                      <div className="bg-black/90 backdrop-blur-xs rounded-xl p-3 flex flex-col items-center justify-center border border-white/10 shadow-lg text-center">
+                        <span className="text-[10px] font-black uppercase text-gray-300 tracking-widest mb-2">
+                          {cat.name}
+                        </span>
+                        <Link
+                          href={`/category/${cat.slug}`}
+                          className="w-full py-2 bg-[#ffd300] hover:bg-white text-black font-extrabold text-[11px] uppercase tracking-widest rounded-full text-center transition-all duration-300 transform group-hover:scale-[1.03] shadow-md flex items-center justify-center gap-1"
+                        >
+                          <span>Shop Now</span>
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                          </svg>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </section>
             )
