@@ -84,144 +84,110 @@ export default function Header({ config, contact, categories }) {
         </div>
       </div>
 
-      {/* Brand Middle Row — Logo Centered + Cart on Right */}
-      <div className="bg-white px-4 md:px-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-16 md:h-20">
-          {/* Left: Mobile Menu Trigger */}
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="md:hidden text-gray-700 hover:text-[#c29900] transition-colors p-1"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+      {/* Brand Middle Row — Search Left, Logo Center, Cart Right */}
+      <div className="bg-white px-4 md:px-8 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 md:gap-4 py-2 md:py-4">
+          {/* Left: Mobile Menu + Search Bar */}
+          <div className="flex items-center gap-1 md:gap-2 flex-1 min-w-0">
+            {/* Mobile Menu Trigger */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden text-gray-700 hover:text-[#c29900] transition-colors p-1 flex-shrink-0"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
 
-          {/* Spacer for mobile to keep logo centered */}
-          <div className="md:hidden w-6" />
+            {/* Search Bar — selalu visible di semua layar */}
+            <div className="relative flex-1 max-w-xs md:max-w-sm lg:max-w-md">
+              <div className="flex items-center bg-gray-50 border border-gray-200 rounded-lg overflow-hidden shadow-sm focus-within:border-[#ffd300] focus-within:ring-2 focus-within:ring-[#ffd300]/20 transition-all duration-200 h-9 md:h-10">
+                <select
+                  className="bg-transparent text-gray-500 text-[10px] md:text-[11px] font-semibold px-2 md:px-3 h-full border-r border-gray-200 outline-none cursor-pointer min-w-0 w-[80px] md:w-[110px] hover:bg-gray-100 transition-colors"
+                  value={selectedCategoryId}
+                  onChange={(e) => {
+                    setSelectedCategoryId(e.target.value);
+                    const selectedName = categories?.find(c => c.id.toString() === e.target.value)?.name || "All Categories";
+                    setSelectedCategory(selectedName);
+                  }}
+                >
+                  <option value="">All</option>
+                  {categories?.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="flex-grow px-2 md:px-3 text-[12px] md:text-xs text-gray-800 outline-none h-full bg-transparent placeholder-gray-400"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button className="bg-[#ffd300] text-black w-8 md:w-9 h-full flex items-center justify-center hover:bg-[#e6be00] transition-colors cursor-pointer flex-shrink-0">
+                  <svg className="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Search Dropdown Panel */}
+              {isSearching && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 shadow-xl rounded-lg z-50 overflow-hidden">
+                  {searchResults.length > 0 ? (
+                    <div className="flex flex-col divide-y divide-gray-100">
+                      {searchResults.map((prod) => (
+                        <Link
+                          key={prod.id}
+                          href={`/product/${prod.slug}`}
+                          className="flex items-center gap-3 p-2.5 hover:bg-amber-50 transition-colors"
+                          onClick={() => setSearchQuery("")}
+                        >
+                          <img
+                            src={getImageUrl(prod.image?.image)}
+                            alt={prod.name}
+                            className="w-8 h-8 object-contain bg-gray-50 rounded border border-gray-100"
+                          />
+                          <div className="flex-grow min-w-0">
+                            <p className="text-xs font-semibold text-gray-800 truncate">{prod.name}</p>
+                            <p className="text-[11px] text-[#c29900] font-bold">BDT {prod.new_price}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 text-center text-xs text-gray-400">No products found</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Center: Logo */}
-          <Link href="/" className="flex items-center justify-center select-none">
+          <Link href="/" className="flex items-center justify-center select-none flex-shrink-0 mx-1 md:mx-4">
             <img
               src="/logo.png"
               alt="PGT CART"
-              className="h-10 md:h-14 lg:h-16 object-contain"
+              className="h-8 md:h-12 lg:h-14 object-contain"
             />
           </Link>
 
-          {/* Right: Cart + Wishlist (Desktop) */}
-          <div className="flex items-center gap-1 md:gap-3">
-            {/* Wishlist - Desktop only */}
-            <Link
-              href="/wishlist"
-              className="hidden md:flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-rose-500 hover:bg-rose-50 transition-all"
-            >
-              <svg className="w-5 h-5 fill-none stroke-current" strokeWidth="1.8" viewBox="0 0 24 24">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-            </Link>
-
-            {/* Cart Icon */}
+          {/* Right: Cart Icon */}
+          <div className="flex items-center gap-1 md:gap-2 flex-1 justify-end min-w-0">
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full text-gray-700 hover:text-[#c29900] hover:bg-amber-50 transition-all cursor-pointer focus:outline-none group"
+              className="relative flex items-center justify-center w-8 h-8 md:w-11 md:h-11 rounded-full text-gray-700 hover:text-[#c29900] hover:bg-amber-50 transition-all cursor-pointer focus:outline-none"
             >
               <svg className="w-5 h-5 md:w-6 md:h-6 fill-none stroke-current" strokeWidth="1.8" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 bg-rose-500 text-white text-[9px] md:text-[10px] min-w-[18px] h-[18px] md:min-w-[20px] md:h-[20px] rounded-full flex items-center justify-center font-bold shadow-sm ring-2 ring-white animate-[bounce-scale_0.3s_ease-out]">
+                <span className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 bg-rose-500 text-white text-[9px] md:text-[10px] min-w-[18px] h-[18px] md:min-w-[20px] md:h-[20px] rounded-full flex items-center justify-center font-bold shadow-sm ring-2 ring-white">
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
               )}
-              {/* Desktop tooltip */}
-              <div className="hidden md:block absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-[10px] font-semibold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                Cart (৳{cartSubtotal.toLocaleString()})
-              </div>
             </button>
-
-            {/* Mobile Cart Badge (already handled by the cart button above) */}
-          </div>
-        </div>
-      </div>
-
-      {/* Search Bar Row — Full-width, modern design */}
-      <div className="bg-white pb-4 px-4 md:px-8 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative">
-            <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl overflow-hidden shadow-sm focus-within:border-[#ffd300] focus-within:ring-2 focus-within:ring-[#ffd300]/20 focus-within:shadow-md transition-all duration-200 h-12">
-              {/* Category Selector */}
-              <select
-                className="bg-transparent text-gray-600 text-xs font-semibold px-4 h-full border-r border-gray-200 outline-none cursor-pointer hidden sm:block min-w-[140px] hover:bg-gray-100 transition-colors"
-                value={selectedCategoryId}
-                onChange={(e) => {
-                  setSelectedCategoryId(e.target.value);
-                  const selectedName = categories?.find(c => c.id.toString() === e.target.value)?.name || "All Categories";
-                  setSelectedCategory(selectedName);
-                }}
-              >
-                <option value="">All Categories</option>
-                {categories?.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Search Input */}
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="flex-grow px-4 text-sm text-gray-800 outline-none h-full bg-transparent placeholder-gray-400"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-
-              {/* Search Button */}
-              <button className="bg-[#ffd300] text-black w-12 h-full flex items-center justify-center hover:bg-[#e6be00] transition-colors cursor-pointer flex-shrink-0">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Search Dropdown Panel */}
-            {isSearching && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 shadow-xl rounded-xl z-50 overflow-hidden">
-                {searchResults.length > 0 ? (
-                  <div className="flex flex-col divide-y divide-gray-100">
-                    {searchResults.map((prod) => (
-                      <Link
-                        key={prod.id}
-                        href={`/product/${prod.slug}`}
-                        className="flex items-center gap-3 p-3 hover:bg-amber-50 transition-colors"
-                        onClick={() => setSearchQuery("")}
-                      >
-                        <img
-                          src={getImageUrl(prod.image?.image)}
-                          alt={prod.name}
-                          className="w-10 h-10 object-contain bg-gray-50 rounded-lg border border-gray-100"
-                        />
-                        <div className="flex-grow min-w-0">
-                          <p className="text-xs font-semibold text-gray-800 truncate">{prod.name}</p>
-                          <p className="text-xs text-[#c29900] font-bold">BDT {prod.new_price}</p>
-                        </div>
-                        <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-6 text-center text-xs text-gray-400">
-                    <svg className="w-10 h-10 mx-auto mb-2 text-gray-200" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    No products found matching "{searchQuery}"
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>
