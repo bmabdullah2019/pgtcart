@@ -169,7 +169,7 @@ export default function Header({ config, contact, categories }) {
             <img
               src="/logo.png"
               alt="PGT CART"
-              className="h-8 md:h-12 lg:h-14 object-contain"
+              className="h-[30px] md:h-[30px] lg:h-[30px] object-contain"
             />
           </Link>
 
