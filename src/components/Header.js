@@ -165,7 +165,7 @@ export default function Header({ config, contact, categories }) {
           </div>
 
           {/* Center: Logo */}
-          <Link href="/" className="flex items-center justify-center select-none flex-shrink-0 mx-1 md:mx-4">
+          <Link href="/" className="flex items-center justify-center select-none flex-shrink-0 mx-1 md:mx-4 pt-2">
             <img
               src="/logo.png"
               alt="PGT CART"
