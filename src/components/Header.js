@@ -74,13 +74,6 @@ export default function Header({ config, contact, categories }) {
               </svg>
               <span>Compare</span>
             </Link>
-            <span className="text-gray-400">|</span>
-            <a href={`${BACKEND_URL}/customer/login`} className="hover:text-gray-200 flex items-center gap-1.5 transition-colors font-semibold">
-              <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
-              </svg>
-              <span>Sign In</span>
-            </a>
           </nav>
         </div>
       </div>
@@ -174,8 +167,17 @@ export default function Header({ config, contact, categories }) {
             />
           </Link>
 
-          {/* Right: Cart Icon */}
-          <div className="flex items-center gap-1 md:gap-2 flex-1 justify-end min-w-0">
+          {/* Right: Sign In + Cart */}
+          <div className="flex items-center gap-2 md:gap-3 flex-1 justify-end min-w-0">
+            <a
+              href={`${BACKEND_URL}/customer/login`}
+              className="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-[11px] md:text-xs font-semibold text-gray-700 hover:border-[#ffd300] hover:text-[#c29900] hover:bg-amber-50 transition-colors whitespace-nowrap"
+            >
+              <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+              </svg>
+              <span>Sign In</span>
+            </a>
             <button
               onClick={() => setIsCartOpen(true)}
               className="relative flex items-center justify-center w-8 h-8 md:w-11 md:h-11 rounded-full text-gray-700 hover:text-[#c29900] hover:bg-amber-50 transition-all cursor-pointer focus:outline-none"
