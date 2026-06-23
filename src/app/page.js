@@ -76,7 +76,7 @@ export default async function Home() {
     <>
         
         {/* Hero Section */}
-        <section className="flex flex-col lg:flex-row gap-4 items-stretch lg:-mt-2">
+        <section className="flex flex-col lg:flex-row gap-4 items-stretch lg:-mt-4">
           {/* Categories Sidebar Navigation - Hidden on Mobile */}
           <div className="w-full lg:w-[270px] flex-shrink-0 hidden lg:block bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
             <div className="flex flex-col divide-y divide-gray-100 text-xs">

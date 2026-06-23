@@ -199,13 +199,13 @@ export default function Header({ config, contact, categories }) {
       </div>
 
       {/* Nav Row */}
-      <div className="bg-transparent hidden md:block py-2">
-        <div className={`${headerContainerClass} flex gap-4 h-11 items-stretch`}>
+      <div className="bg-[#ffd300] text-black h-11 hidden md:block select-none">
+        <div className={`${headerContainerClass} flex items-stretch h-full`}>
           {/* All Categories Trigger */}
-          <div className="relative w-[270px] flex-shrink-0">
+          <div className="relative w-[270px] flex-shrink-0 h-full">
             <button
               onClick={() => !isHome && setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-              className={`bg-black text-white px-4 h-full font-bold text-xs md:text-sm flex items-center justify-between uppercase select-none w-full rounded-lg ${!isHome ? 'cursor-pointer hover:bg-gray-900' : 'cursor-default'}`}
+              className={`bg-black text-white px-4 h-full font-bold text-xs md:text-sm flex items-center justify-between uppercase w-full ${!isHome ? 'cursor-pointer hover:bg-gray-900' : 'cursor-default'}`}
             >
               <div className="flex items-center gap-2">
                 <span>All CATEGORIES</span>
@@ -217,7 +217,7 @@ export default function Header({ config, contact, categories }) {
 
             {/* Sidebar dropdown */}
             {isCategoryMenuOpen && !isHome && (
-              <div className="absolute top-full left-0 w-[270px] bg-white border border-gray-100 shadow-2xl py-2 flex flex-col text-gray-800 z-50 mt-1 rounded-lg">
+              <div className="absolute top-full left-0 w-[270px] bg-white border border-gray-100 shadow-2xl py-2 flex flex-col text-gray-800 z-50 rounded-b-lg">
                 {categories?.map((cat) => (
                   <div key={cat.id} className="relative group/sub">
                     <Link
@@ -277,7 +277,7 @@ export default function Header({ config, contact, categories }) {
           </div>
 
           {/* Links */}
-          <nav className="flex-grow bg-[#ffd300] text-black rounded-lg h-full flex items-center justify-center gap-6 md:gap-8 px-6 text-xs font-extrabold uppercase tracking-wider select-none">
+          <nav className="flex-grow flex items-center justify-center gap-6 md:gap-8 px-6 text-xs font-extrabold uppercase tracking-wider h-full">
             <Link href="/page/about-us" className="hover:text-gray-700 transition-colors">
               About Us
             </Link>
