@@ -292,8 +292,8 @@ export default function Header({ config, contact, categories, pages }) {
       </div>
 
       {/* ==================== MOBILE HEADER ==================== */}
-      {/* Red Topbar */}
-      <div className="bg-[#d31212] text-white text-[12px] font-semibold py-2.5 px-4 flex justify-between items-center md:hidden">
+      {/* Yellow Topbar */}
+      <div className="bg-[#ffd300] text-black text-[12px] font-semibold py-2.5 px-4 flex justify-between items-center md:hidden">
         <div className="flex items-center gap-1.5">
           <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
             <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
@@ -306,7 +306,7 @@ export default function Header({ config, contact, categories, pages }) {
           <a href={`${BACKEND_URL}/customer/login`} className="hover:underline">
             Create an Account
           </a>
-          <span className="text-white/40">|</span>
+          <span className="text-black/20">|</span>
           <a href={`${BACKEND_URL}/customer/login`} className="hover:underline">
             Sign In
           </a>
@@ -326,23 +326,23 @@ export default function Header({ config, contact, categories, pages }) {
         </button>
 
         {/* Logo in Center */}
-        <Link href="/" className="flex items-center justify-center select-none max-w-[160px]">
+        <Link href="/" className="flex items-center justify-center select-none max-w-[200px]">
           <img
             src={headerLogo ? getImageUrl(headerLogo) : "/logo.png"}
             alt={siteName}
-            className="h-10 object-contain"
+            className="h-16 object-contain"
           />
         </Link>
 
         {/* Circular Cart Button with Badge on Right */}
         <button
           onClick={() => setIsCartOpen(true)}
-          className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[#f5f5f5] text-[#d31212] hover:bg-gray-100 focus:outline-none cursor-pointer"
+          className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[#f5f5f5] text-gray-700 hover:bg-gray-100 focus:outline-none cursor-pointer"
         >
           <svg className="w-5.5 h-5.5 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
-          <span className="absolute -top-1 -right-1 bg-[#d31212] text-white text-[9px] min-w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold border-2 border-white">
+          <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] min-w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold border-2 border-white">
             {cartCount}
           </span>
         </button>
