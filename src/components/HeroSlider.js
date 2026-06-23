@@ -25,7 +25,7 @@ export default function HeroSlider({ slides }) {
   };
 
   return (
-    <div className="relative w-full aspect-[21/9] md:aspect-[3/1] bg-gray-100 overflow-hidden rounded-lg group shadow-sm">
+    <div className="relative w-full aspect-[21/9] lg:aspect-auto lg:h-full bg-gray-100 overflow-hidden rounded-lg group shadow-sm">
       {/* Slides */}
       <div
         className="flex transition-transform duration-700 ease-out h-full"
@@ -51,7 +51,7 @@ export default function HeroSlider({ slides }) {
         <>
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer"
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/20 text-white hover:bg-black/40 flex items-center justify-center transition-all z-10 cursor-pointer"
             aria-label="Previous slide"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -60,7 +60,7 @@ export default function HeroSlider({ slides }) {
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/20 text-white hover:bg-black/40 flex items-center justify-center transition-all z-10 cursor-pointer"
             aria-label="Next slide"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@ export default function HeroSlider({ slides }) {
               key={idx}
               onClick={() => setCurrent(idx)}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                current === idx ? "bg-[#ffd300] w-6" : "bg-white/60 hover:bg-white"
+                current === idx ? "bg-white scale-110" : "bg-white/50 hover:bg-white/80"
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             />

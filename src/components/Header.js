@@ -2,10 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { getImageUrl, BACKEND_URL } from "../utils/api";
 import { useCart } from "../context/CartContext";
 
 export default function Header({ config, contact, categories }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -196,26 +199,25 @@ export default function Header({ config, contact, categories }) {
       </div>
 
       {/* Nav Row */}
-      <div className="bg-[#ffd300] text-black h-12 hidden md:block">
-        <div className={`${headerContainerClass} flex items-center h-full`}>
+      <div className="bg-transparent hidden md:block py-2">
+        <div className={`${headerContainerClass} flex gap-4 h-11 items-stretch`}>
           {/* All Categories Trigger */}
-          <div className="relative h-full">
+          <div className="relative w-[270px] flex-shrink-0">
             <button
-              onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-              className="bg-black text-white hover:bg-gray-900 transition-colors px-6 h-full font-bold text-sm flex items-center gap-2.5 uppercase select-none cursor-pointer"
+              onClick={() => !isHome && setIsCategoryMenuOpen(!isCategoryMenuOpen)}
+              className={`bg-black text-white px-4 h-full font-bold text-xs md:text-sm flex items-center justify-between uppercase select-none w-full rounded-lg ${!isHome ? 'cursor-pointer hover:bg-gray-900' : 'cursor-default'}`}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <span>All Categories</span>
-              <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${isCategoryMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2">
+                <span>All CATEGORIES</span>
+              </div>
+              <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${isCategoryMenuOpen && !isHome ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
             {/* Sidebar dropdown */}
-            {isCategoryMenuOpen && (
-              <div className="absolute top-full left-0 w-64 bg-white border border-gray-100 shadow-2xl py-2 flex flex-col text-gray-800 z-50">
+            {isCategoryMenuOpen && !isHome && (
+              <div className="absolute top-full left-0 w-[270px] bg-white border border-gray-100 shadow-2xl py-2 flex flex-col text-gray-800 z-50 mt-1 rounded-lg">
                 {categories?.map((cat) => (
                   <div key={cat.id} className="relative group/sub">
                     <Link
@@ -233,7 +235,7 @@ export default function Header({ config, contact, categories }) {
 
                     {/* Subcategories list */}
                     {cat.menusubcategories?.length > 0 && (
-                      <div className="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-2xl py-2 hidden group-hover/sub:block">
+                      <div className="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-2xl py-2 hidden group-hover/sub:block rounded-lg ml-1">
                         {cat.menusubcategories.map((sub) => (
                           <div key={sub.id} className="relative group/child">
                             <Link
@@ -251,7 +253,7 @@ export default function Header({ config, contact, categories }) {
 
                             {/* Child categories list */}
                             {sub.menuchildcategories?.length > 0 && (
-                              <div className="absolute top-0 left-full w-56 bg-white border border-gray-100 shadow-2xl py-2 hidden group-hover/child:block">
+                              <div className="absolute top-0 left-full w-56 bg-white border border-gray-100 shadow-2xl py-2 hidden group-hover/child:block rounded-lg ml-1">
                                 {sub.menuchildcategories.map((child) => (
                                   <Link
                                     key={child.id}
@@ -275,17 +277,20 @@ export default function Header({ config, contact, categories }) {
           </div>
 
           {/* Links */}
-          <nav className="flex items-center h-full gap-1 ml-4 text-xs font-bold uppercase tracking-wider text-black">
-            <Link href="/page/about-us" className="px-5 h-full flex items-center hover:bg-[#e6be00] transition-colors">
+          <nav className="flex-grow bg-[#ffd300] text-black rounded-lg h-full flex items-center justify-center gap-6 md:gap-8 px-6 text-xs font-extrabold uppercase tracking-wider select-none">
+            <Link href="/page/about-us" className="hover:text-gray-700 transition-colors">
               About Us
             </Link>
-            <Link href="/contact" className="px-5 h-full flex items-center hover:bg-[#e6be00] transition-colors">
+            <Link href="/contact" className="hover:text-gray-700 transition-colors">
               Contact Us
             </Link>
-            <Link href="/page/store-location" className="px-5 h-full flex items-center hover:bg-[#e6be00] transition-colors">
+            <Link href="/page/store-location" className="hover:text-gray-700 transition-colors">
               Store Location
             </Link>
-            <Link href="/page/dealer-location" className="px-5 h-full flex items-center hover:bg-[#e6be00] transition-colors">
+            <Link href="/page/load-calculator" className="hover:text-gray-700 transition-colors">
+              Load Calculator
+            </Link>
+            <Link href="/page/dealer-location" className="hover:text-gray-700 transition-colors">
               Dealer Location
             </Link>
           </nav>

@@ -75,22 +75,16 @@ export default async function Home() {
   return (
     <>
         
-        {/* Hero Section Grid */}
-        <section className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+        {/* Hero Section */}
+        <section className="flex flex-col lg:flex-row gap-4 items-stretch lg:-mt-2">
           {/* Categories Sidebar Navigation - Hidden on Mobile */}
-          <div className="bg-white border border-gray-100 rounded-lg shadow-xs p-4 hidden lg:block divide-y divide-gray-50">
-            <h3 className="text-xs uppercase font-extrabold text-gray-900 tracking-wider mb-3 flex items-center gap-2">
-              <svg className="w-4 h-4 text-[#ffd300]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <span>Categories</span>
-            </h3>
-            <div className="flex flex-col pt-2 divide-y divide-gray-100 text-xs">
-              {categories?.slice(0, 11).map((cat) => (
-                <div key={cat.id} className="relative group/side font-semibold text-gray-700 hover:text-[#c29900] py-0.5">
+          <div className="w-full lg:w-[270px] flex-shrink-0 hidden lg:block bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+            <div className="flex flex-col divide-y divide-gray-100 text-xs">
+              {categories?.slice(0, 10).map((cat) => (
+                <div key={cat.id} className="relative group/side font-semibold text-gray-700 hover:text-[#c29900]">
                   <Link
                     href={`/category/${cat.slug}`}
-                    className="flex justify-between items-center py-2 px-1 hover:bg-amber-50 rounded transition-colors"
+                    className="flex justify-between items-center py-3 px-4 hover:bg-amber-50/40 transition-colors"
                   >
                     <span>{cat.name}</span>
                     {cat.menusubcategories?.length > 0 && (
@@ -141,27 +135,27 @@ export default async function Home() {
           </div>
 
           {/* Hero Slide Panel */}
-          <div className="lg:col-span-3">
+          <div className="flex-grow w-full lg:w-auto">
             <HeroSlider slides={slides} />
           </div>
         </section>
 
         {/* Category Icons Grid Strip */}
         {categories && categories.length > 0 && (
-          <section className="bg-white border border-gray-100 rounded-lg p-4 shadow-xs">
-            <div className="flex gap-4 overflow-x-auto scrollbar-none justify-between">
+          <section className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div className="flex overflow-x-auto scrollbar-none divide-x divide-gray-200">
               {categories.slice(0, 8).map((cat) => (
                 <Link
                   key={cat.id}
                   href={`/category/${cat.slug}`}
-                  className="flex flex-col items-center justify-center p-3 border border-gray-50 rounded-lg w-28 flex-shrink-0 hover:bg-amber-50 hover:text-[#c29900] transition-all duration-200 group text-center"
+                  className="flex flex-col items-center justify-center p-4 text-center hover:bg-amber-50/30 transition-all duration-200 group w-full min-w-[125px] md:min-w-0 md:flex-1"
                 >
                   <img
                     src={getImageUrl(cat.image)}
                     alt={cat.name}
-                    className="h-10 w-10 object-contain mb-2 group-hover:scale-110 transition-transform"
+                    className="h-10 w-10 object-contain mb-3 group-hover:scale-105 transition-transform duration-200"
                   />
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-800 group-hover:text-[#c29900]">
+                  <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-[#c29900] leading-tight group-hover:text-[#b08b00]">
                     {cat.name}
                   </span>
                 </Link>
