@@ -53,8 +53,9 @@ export default function Header({ config, contact, categories, pages }) {
 
   return (
     <header className="w-full font-sans sticky top-0 z-50 shadow-md bg-white">
+      {/* ==================== DESKTOP HEADER ==================== */}
       {/* Yellow Topbar */}
-      <div className="bg-[#ffd300] text-black text-[13px] font-medium py-2">
+      <div className="hidden md:block bg-[#ffd300] text-black text-[13px] font-medium py-2">
         <div className={`${headerContainerClass} flex justify-between items-center`}>
           <div className="flex items-center gap-2">
             <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -82,7 +83,7 @@ export default function Header({ config, contact, categories, pages }) {
       </div>
 
       {/* Brand Middle Row — Search Left, Logo Center, Cart Right */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="hidden md:block bg-white border-b border-gray-100">
         <div className={`${headerContainerClass} flex items-center justify-between gap-2 md:gap-4 py-2 md:py-4`}>
           {/* Left: Mobile Menu + Search Bar */}
           <div className="flex items-center gap-1 md:gap-2 flex-1 min-w-0">
@@ -288,6 +289,143 @@ export default function Header({ config, contact, categories, pages }) {
             </Link>
           </nav>
         </div>
+      </div>
+
+      {/* ==================== MOBILE HEADER ==================== */}
+      {/* Red Topbar */}
+      <div className="bg-[#d31212] text-white text-[12px] font-semibold py-2.5 px-4 flex justify-between items-center md:hidden">
+        <div className="flex items-center gap-1.5">
+          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+          </svg>
+          <a href={`tel:${hotline}`} className="hover:underline font-bold">
+            {hotline}
+          </a>
+        </div>
+        <div className="flex items-center gap-3 text-[11px]">
+          <a href={`${BACKEND_URL}/customer/login`} className="hover:underline">
+            Create an Account
+          </a>
+          <span className="text-white/40">|</span>
+          <a href={`${BACKEND_URL}/customer/login`} className="hover:underline">
+            Sign In
+          </a>
+        </div>
+      </div>
+
+      {/* Brand Row */}
+      <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100 md:hidden">
+        {/* Burger Menu Button on Left */}
+        <button
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="text-gray-700 hover:text-black p-1 focus:outline-none cursor-pointer"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        {/* Logo in Center */}
+        <Link href="/" className="flex items-center justify-center select-none max-w-[160px]">
+          <img
+            src={headerLogo ? getImageUrl(headerLogo) : "/logo.png"}
+            alt={siteName}
+            className="h-10 object-contain"
+          />
+        </Link>
+
+        {/* Circular Cart Button with Badge on Right */}
+        <button
+          onClick={() => setIsCartOpen(true)}
+          className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[#f5f5f5] text-[#d31212] hover:bg-gray-100 focus:outline-none cursor-pointer"
+        >
+          <svg className="w-5.5 h-5.5 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span className="absolute -top-1 -right-1 bg-[#d31212] text-white text-[9px] min-w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold border-2 border-white">
+            {cartCount}
+          </span>
+        </button>
+      </div>
+
+      {/* Search Row */}
+      <div className="bg-white px-4 py-2 border-b border-gray-100 md:hidden">
+        <div className="relative">
+          <div className="flex items-center bg-[#fcfcfc] border border-gray-200 rounded-md overflow-hidden h-9 px-3 focus-within:border-gray-400 focus-within:bg-white transition-all">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="flex-grow text-[13px] text-gray-800 outline-none bg-transparent placeholder-gray-400"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button className="text-gray-400 hover:text-black flex items-center justify-center cursor-pointer">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Search Dropdown Panel for Mobile */}
+          {isSearching && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 shadow-xl rounded-lg z-50 overflow-hidden">
+              {searchResults.length > 0 ? (
+                <div className="flex flex-col divide-y divide-gray-100">
+                  {searchResults.map((prod) => (
+                    <Link
+                      key={prod.id}
+                      href={`/product/${prod.slug}`}
+                      className="flex items-center gap-3 p-2.5 hover:bg-amber-50 transition-colors"
+                      onClick={() => setSearchQuery("")}
+                    >
+                      <img
+                        src={getImageUrl(prod.image?.image)}
+                        alt={prod.name}
+                        className="w-8 h-8 object-contain bg-gray-50 rounded border border-gray-100"
+                      />
+                      <div className="flex-grow min-w-0">
+                        <p className="text-xs font-semibold text-gray-800 truncate">{prod.name}</p>
+                        <p className="text-[11px] text-[#c29900] font-bold">BDT {prod.new_price}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 text-center text-xs text-gray-400">No products found</div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* All Categories Row */}
+      <div className="bg-black text-white md:hidden relative select-none">
+        <button
+          onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
+          className="w-full flex items-center justify-between px-4 py-2.5 font-bold text-xs uppercase tracking-wider focus:outline-none cursor-pointer hover:bg-gray-900 transition-colors"
+        >
+          <span>ALL CATEGORIES</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        {/* Category Menu Dropdown on Mobile */}
+        {isCategoryMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-xl flex flex-col text-gray-800 z-50 max-h-[300px] overflow-y-auto">
+            {categories?.map((cat) => (
+              <div key={cat.id} className="border-b border-gray-50 last:border-0">
+                <Link
+                  href={`/category/${cat.slug}`}
+                  className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-gray-50"
+                  onClick={() => setIsCategoryMenuOpen(false)}
+                >
+                  <span>{cat.name}</span>
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Mobile Drawer Panel */}
