@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { getImageUrl, BACKEND_URL } from "../utils/api";
 import { useCart } from "../context/CartContext";
 
-export default function Header({ config, contact, categories }) {
+export default function Header({ config, contact, categories, pages }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -164,8 +164,8 @@ export default function Header({ config, contact, categories }) {
           {/* Center: Logo */}
           <Link href="/" className="flex items-center justify-center select-none flex-shrink-0">
             <img
-              src="/logo.png"
-              alt="PGT CART"
+              src={headerLogo ? getImageUrl(headerLogo) : "/logo.png"}
+              alt={siteName}
               className="h-[90px] md:h-[90px] lg:h-[90px] object-contain"
             />
           </Link>
@@ -278,20 +278,13 @@ export default function Header({ config, contact, categories }) {
 
           {/* Links */}
           <nav className="flex-grow flex items-center justify-center gap-6 md:gap-8 px-6 text-xs font-extrabold uppercase tracking-wider h-full">
-            <Link href="/page/about-us" className="hover:text-gray-700 transition-colors">
-              About Us
-            </Link>
+            {pages?.map((page) => (
+              <Link key={page.id} href={`/page/${page.slug}`} className="hover:text-gray-700 transition-colors">
+                {page.name}
+              </Link>
+            ))}
             <Link href="/contact" className="hover:text-gray-700 transition-colors">
               Contact Us
-            </Link>
-            <Link href="/page/store-location" className="hover:text-gray-700 transition-colors">
-              Store Location
-            </Link>
-            <Link href="/page/load-calculator" className="hover:text-gray-700 transition-colors">
-              Load Calculator
-            </Link>
-            <Link href="/page/dealer-location" className="hover:text-gray-700 transition-colors">
-              Dealer Location
             </Link>
           </nav>
         </div>
@@ -341,17 +334,13 @@ export default function Header({ config, contact, categories }) {
               <Link href="/" className="px-4 py-3 hover:bg-gray-50 text-gray-800" onClick={() => setIsMobileMenuOpen(false)}>
                 Home
               </Link>
-              <Link href="/page/about-us" className="px-4 py-3 hover:bg-gray-50 text-gray-800" onClick={() => setIsMobileMenuOpen(false)}>
-                About Us
-              </Link>
+              {pages?.map((page) => (
+                <Link key={page.id} href={`/page/${page.slug}`} className="px-4 py-3 hover:bg-gray-50 text-gray-800" onClick={() => setIsMobileMenuOpen(false)}>
+                  {page.name}
+                </Link>
+              ))}
               <Link href="/contact" className="px-4 py-3 hover:bg-gray-50 text-gray-800" onClick={() => setIsMobileMenuOpen(false)}>
                 Contact Us
-              </Link>
-              <Link href="/page/store-location" className="px-4 py-3 hover:bg-gray-50 text-gray-800" onClick={() => setIsMobileMenuOpen(false)}>
-                Store Location
-              </Link>
-              <Link href="/page/dealer-location" className="px-4 py-3 hover:bg-gray-50 text-gray-800" onClick={() => setIsMobileMenuOpen(false)}>
-                Dealer Location
               </Link>
             </nav>
 

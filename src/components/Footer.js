@@ -47,8 +47,8 @@ export default function Footer({ config, contact, leftMenu, rightMenu, socialLin
         <div className="flex flex-col gap-4">
           <Link href="/" className="flex items-center gap-2 select-none">
             <img
-              src="/logo.png"
-              alt="PGT CART"
+              src={footerLogo ? getImageUrl(footerLogo) : "/logo.png"}
+              alt={siteName}
               className="h-12 md:h-16 object-contain"
             />
           </Link>
@@ -197,7 +197,7 @@ export default function Footer({ config, contact, leftMenu, rightMenu, socialLin
           />
         </div>
         <p className="text-gray-400 text-xs tracking-wider">
-          &copy; {new Date().getFullYear()} Copyright By {siteName}. All rights reserved.
+          &copy; {new Date().getFullYear()} {config?.copyright || `Copyright By ${siteName}`}. All rights reserved.
         </p>
       </div>
     </footer>

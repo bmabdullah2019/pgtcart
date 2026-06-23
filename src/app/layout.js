@@ -82,7 +82,12 @@ export default async function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900 font-sans">
         <CartProvider>
-          <Header config={config} contact={contact} categories={categories} />
+          <Header 
+            config={config} 
+            contact={contact} 
+            categories={categories} 
+            pages={[...(footerLeft || []), ...(footerRight || [])]} 
+          />
           <Suspense fallback={<div className="w-full animate-pulse"><div className="h-[400px] bg-gray-100 rounded-lg"></div></div>}>
             <main className="flex-grow max-w-7xl mx-auto w-full px-4 md:px-8 py-6 flex flex-col gap-8">
               {children}
