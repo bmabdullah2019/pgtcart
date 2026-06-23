@@ -78,21 +78,27 @@ export default async function Home() {
         {/* Hero Section */}
         <section className="flex flex-col lg:flex-row gap-4 items-stretch lg:-mt-4">
           {/* Categories Sidebar Navigation - Hidden on Mobile */}
-          <div className="w-full lg:w-[270px] flex-shrink-0 hidden lg:block bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+          <div className="w-full lg:w-[270px] flex-shrink-0 hidden lg:block bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col">
             <div className="flex flex-col divide-y divide-gray-100 text-xs">
-              {categories?.slice(0, 10).map((cat) => (
-                <div key={cat.id} className="relative group/side font-semibold text-gray-700 hover:text-[#c29900]">
-                  <Link
-                    href={`/category/${cat.slug}`}
-                    className="flex justify-between items-center py-3 px-4 hover:bg-amber-50/40 transition-colors"
+              {categories?.slice(0, 10).map((cat, idx) => {
+                const isFirst = idx === 0;
+                const isLast = idx === Math.min(categories.length, 10) - 1;
+                return (
+                  <div 
+                    key={cat.id} 
+                    className={`relative group/side font-semibold text-gray-700 hover:text-[#c29900] ${isFirst ? 'rounded-t-lg' : ''} ${isLast ? 'rounded-b-lg' : ''}`}
                   >
-                    <span>{cat.name}</span>
-                    {cat.menusubcategories?.length > 0 && (
-                      <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
-                    )}
-                  </Link>
+                    <Link
+                      href={`/category/${cat.slug}`}
+                      className={`flex justify-between items-center py-3 px-4 hover:bg-amber-50/40 transition-colors ${isFirst ? 'rounded-t-lg' : ''} ${isLast ? 'rounded-b-lg' : ''}`}
+                    >
+                      <span>{cat.name}</span>
+                      {cat.menusubcategories?.length > 0 && (
+                        <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      )}
+                    </Link>
 
                   {/* Subcategories sidebar floating menu */}
                   {cat.menusubcategories?.length > 0 && (
@@ -130,7 +136,8 @@ export default async function Home() {
                     </div>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
