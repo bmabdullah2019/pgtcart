@@ -5,7 +5,7 @@ import ProductDetailsWrapper from "../../../components/ProductDetailsWrapper";
 
 async function getProductData(slug) {
   try {
-    const res = await fetch(`${API_BASE}/product-details/${slug}`, {
+    const res = await fetch(`${API_BASE}/product/${slug}`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) return null;
@@ -30,8 +30,8 @@ export default async function ProductPage({ params }) {
   const {
     product,
     related_products,
-    variantPayload,
-    displayGallery,
+    variant_payload,
+    gallery,
     shipping_charges,
   } = data;
 
@@ -39,8 +39,8 @@ export default async function ProductPage({ params }) {
     <ProductDetailsWrapper
       product={product}
       relatedProducts={related_products}
-      variantPayload={variantPayload}
-      displayGallery={displayGallery}
+      variantPayload={variant_payload}
+      displayGallery={gallery}
       shippingCharges={shipping_charges}
     />
   );
