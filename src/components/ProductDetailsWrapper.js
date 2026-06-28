@@ -15,7 +15,7 @@ export default function ProductDetailsWrapper({
   shippingCharges = [],
 }) {
   const router = useRouter();
-  const { addToCart, toggleWishlist, isInWishlist, addToCompare, isInCompare } = useCart();
+  const { addToCart, toggleWishlist, isInWishlist, addToCompare, isInCompare, addToast } = useCart();
 
   const isWishlisted = isInWishlist(product.id);
   const isCompared = isInCompare(product.id);
@@ -92,16 +92,16 @@ export default function ProductDetailsWrapper({
 
   const handleAddToCart = () => {
     if (stockAvailable <= 0) {
-      alert("This product is currently out of stock.");
+      addToast("This product is currently out of stock.", "error");
       return;
     }
     addToCart(product, qty, selectedVariant, selectedAttributes.color, selectedAttributes.size);
-    alert(`${product.name} added to cart!`);
+    addToast(`${product.name} added to cart!`, "success");
   };
 
   const handleBuyNow = () => {
     if (stockAvailable <= 0) {
-      alert("This product is currently out of stock.");
+      addToast("This product is currently out of stock.", "error");
       return;
     }
     addToCart(product, qty, selectedVariant, selectedAttributes.color, selectedAttributes.size);

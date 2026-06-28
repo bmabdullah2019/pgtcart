@@ -2,11 +2,13 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getImageUrl, BACKEND_URL } from "../utils/api";
 import { useCart } from "../context/CartContext";
 
 export default function ProductCard({ product }) {
-  const { toggleWishlist, isInWishlist, addToCart } = useCart();
+  const router = useRouter();
+  const { toggleWishlist, isInWishlist, addToCart, addToast } = useCart();
   
   const oldPrice = parseFloat(product?.old_price || 0);
   const newPrice = parseFloat(product?.new_price || 0);
@@ -21,10 +23,35 @@ export default function ProductCard({ product }) {
   const displayRating = 4;
   const displayRatingCount = 0;
 
-  const isOutOfStock = false; // By default we mark in stock unless specified
+  // Calculate stock status
+  const baseStock = product?.warehouse_stocks?.reduce((acc, ws) => {
+    return acc + Math.max(0, parseInt(ws.physical_quantity || 0) - parseInt(ws.reserved_quantity || 0));
+  }, 0) || 0;
+
+  const stockAvailable = product?.available_stock !== undefined ? product.available_stock : baseStock;
+  const isOutOfStock = stockAvailable <= 0;
   const emiPrice = Math.round(newPrice / 12);
 
   const isWishlisted = isInWishlist(product?.id);
+  const hasVariants = product?.has_variant || (product?.prosizes && product.prosizes.length > 0) || (product?.procolors && product.procolors.length > 0);
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isOutOfStock) {
+      addToast("This product is currently out of stock.", "error");
+      return;
+    }
+
+    if (hasVariants) {
+      router.push(`/product/${product.slug}`);
+      return;
+    }
+
+    addToCart(product);
+    addToast(`${product.name} added to cart!`, "success");
+  };
 
   return (
     <div className="bg-white rounded-none border-b border-r border-gray-100 overflow-hidden hover:shadow-md hover:z-10 transition-all duration-300 group flex flex-col h-full relative">
@@ -37,7 +64,11 @@ export default function ProductCard({ product }) {
 
       {/* Wishlist Heart Icon (Always visible but subtle) */}
       <button
-        onClick={() => toggleWishlist(product)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleWishlist(product);
+        }}
         className="absolute top-3 right-3 z-10 p-1.5 bg-white/90 hover:bg-white rounded-full text-gray-400 hover:text-red-500 shadow-xs transition-colors cursor-pointer"
         title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
       >
@@ -60,12 +91,12 @@ export default function ProductCard({ product }) {
         {/* Action Button Overlays (Floating sidebar on hover) */}
         <div className="absolute right-3 top-12 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 z-10">
           <button
-            onClick={() => addToCart(product)}
+            onClick={handleAddToCart}
             className="p-2 bg-white hover:bg-[#ffd300] text-gray-700 hover:text-black rounded-full shadow-md transition-colors cursor-pointer"
             title="Add to Cart"
           >
             <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
           </button>
           <Link

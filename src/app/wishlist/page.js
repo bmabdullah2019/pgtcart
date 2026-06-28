@@ -6,7 +6,7 @@ import { useCart } from "../../context/CartContext";
 import { getImageUrl } from "../../utils/api";
 
 export default function WishlistPage() {
-  const { wishlistItems, removeFromWishlist, addToCart } = useCart();
+  const { wishlistItems, removeFromWishlist, addToCart, addToast } = useCart();
 
   const handleAddToCart = (item) => {
     // Construct product payload for addToCart
@@ -19,7 +19,7 @@ export default function WishlistPage() {
       slug: item.slug,
     };
     addToCart(productPayload, 1);
-    alert(`${item.name} added to cart!`);
+    addToast(`${item.name} added to cart!`, "success");
   };
 
   return (

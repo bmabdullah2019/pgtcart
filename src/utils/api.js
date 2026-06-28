@@ -31,7 +31,11 @@ export function getImageUrl(path) {
   // since the local root URL maps to the project root, not the public/ folder.
   // For production or php artisan serve, the URL maps directly to the public folder, so we strip "public/".
   // Note: On production (https://admin.pgtcart.com), the server maps to the project root, so it also needs the "public/" prefix.
-  const mapsToPublicFolder = BACKEND_URL.includes("localhost:8000") || BACKEND_URL.includes("127.0.0.1:8000");
+  const mapsToPublicFolder = 
+    BACKEND_URL.includes("localhost:8000") || 
+    BACKEND_URL.includes("127.0.0.1:8000") ||
+    BACKEND_URL.includes(".test") ||
+    BACKEND_URL.includes("/public");
 
   if (mapsToPublicFolder) {
     if (cleanPath.startsWith("public/")) {
