@@ -10,13 +10,7 @@ export default function LoginPage() {
     <div className="min-h-[70vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
         <div>
-          <div className="flex justify-center">
-            {/* Elegant Brand Icon / Header */}
-            <div className="h-12 w-12 rounded-xl bg-teal-600 flex items-center justify-center text-white font-extrabold text-xl shadow-md">
-              PGT
-            </div>
-          </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
+          <h2 className="text-center text-3xl font-extrabold text-gray-900 tracking-tight">
             Admin Login
           </h2>
           <p className="mt-2 text-center text-sm text-gray-500">

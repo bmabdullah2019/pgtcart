@@ -8,6 +8,7 @@ import { useCart } from "../context/CartContext";
 
 export default function Header({ config, contact, categories, pages }) {
   const pathname = usePathname();
+  if (pathname === "/login") return null;
   const isHome = pathname === "/";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
