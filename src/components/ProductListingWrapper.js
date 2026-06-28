@@ -194,7 +194,7 @@ export default function ProductListingWrapper({
         {/* Left Filters Sidebar */}
         <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
           {/* Main Title Heading (SHOP BY) */}
-          <div className="bg-[#e31e24] text-white font-extrabold text-xs px-4 py-3 uppercase tracking-wider rounded-t-lg select-none">
+          <div className="bg-[#ffd300] text-black font-extrabold text-xs px-4 py-3 uppercase tracking-wider rounded-t-lg select-none">
             Shop By
           </div>
 
@@ -228,12 +228,12 @@ export default function ProductListingWrapper({
                         const isChecked = selectedItems.includes(itemId);
 
                         return (
-                          <label key={item.id} className="flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-red-600 cursor-pointer select-none">
+                          <label key={item.id} className="flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
                             <input
                               type="checkbox"
                               checked={isChecked}
                               onChange={() => handleCheckboxChange(item.id)}
-                              className="rounded text-[#e31e24] focus:ring-[#e31e24] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                              className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
                             />
                             <span className="truncate">{itemName}</span>
                           </label>
@@ -268,7 +268,7 @@ export default function ProductListingWrapper({
                       const label = `BDT ${range.start.toLocaleString()} - BDT ${range.end.toLocaleString()}`;
 
                       return (
-                        <label key={idx} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-red-600 cursor-pointer select-none">
+                        <label key={idx} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
                           <input
                             type="checkbox"
                             checked={isChecked}
@@ -279,7 +279,7 @@ export default function ProductListingWrapper({
                                 updateFilters({ min_price: rangeMinStr, max_price: rangeMaxStr });
                               }
                             }}
-                            className="rounded text-[#e31e24] focus:ring-[#e31e24] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                            className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
                           />
                           <span>{label}</span>
                         </label>
@@ -310,12 +310,12 @@ export default function ProductListingWrapper({
                   {[4, 3, 2, 1].map((ratingVal) => {
                     const isChecked = currentRating === ratingVal.toString();
                     return (
-                      <label key={ratingVal} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-red-600 cursor-pointer select-none">
+                      <label key={ratingVal} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
                         <input
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => handleRatingChange(ratingVal)}
-                          className="rounded text-[#e31e24] focus:ring-[#e31e24] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                          className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
                         />
                         <div className="flex items-center gap-1">
                           <div className="flex items-center">
@@ -347,7 +347,7 @@ export default function ProductListingWrapper({
 
           {/* Collapsible Compare Products Section */}
           <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white flex flex-col">
-            <div className="w-full px-4 py-3 bg-[#e31e24] font-extrabold text-xs text-white uppercase tracking-wider select-none">
+            <div className="w-full px-4 py-3 bg-[#ffd300] font-extrabold text-xs text-black uppercase tracking-wider select-none">
               Compare Products
             </div>
             <div className="p-4 flex flex-col gap-3">
@@ -358,7 +358,7 @@ export default function ProductListingWrapper({
                       <span className="truncate text-gray-700 font-semibold max-w-[150px]">{item.name}</span>
                       <button
                         onClick={() => removeFromCompare(item.id)}
-                        className="text-gray-400 hover:text-red-600 transition-colors p-0.5 cursor-pointer"
+                        className="text-gray-400 hover:text-[#c29900] transition-colors p-0.5 cursor-pointer"
                         title="Remove"
                       >
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
