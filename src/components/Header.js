@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getImageUrl, BACKEND_URL } from "../utils/api";
+import { getImageUrl, BACKEND_URL, API_BASE } from "../utils/api";
 import { useCart } from "../context/CartContext";
 
 export default function Header({ config, contact, categories, pages }) {
@@ -49,29 +49,41 @@ export default function Header({ config, contact, categories, pages }) {
 
   // Handle Search Input Change
   useEffect(() => {
+    let active = true;
     if (searchQuery.trim().length > 1) {
       setIsSearching(true);
-      const results = [];
-      if (categories) {
-        categories.forEach(cat => {
-          if (selectedCategoryId && cat.id.toString() !== selectedCategoryId.toString()) {
-            return;
+      
+      const fetchResults = async () => {
+        try {
+          const catParam = selectedCategoryId ? `&category=${selectedCategoryId}` : "";
+          const response = await fetch(`${API_BASE}/search?keyword=${encodeURIComponent(searchQuery)}${catParam}`);
+          if (!response.ok) throw new Error("Search failed");
+          const json = await response.json();
+          if (active && json && json.status === "success") {
+            setSearchResults(json.data || []);
           }
-          if (cat.products) {
-            cat.products.forEach(prod => {
-              if (prod.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-                results.push(prod);
-              }
-            });
+        } catch (error) {
+          console.error("Error during search:", error);
+          if (active) {
+            setSearchResults([]);
           }
-        });
-      }
-      setSearchResults(results.slice(0, 8));
+        }
+      };
+
+      // Debounce the API call slightly (300ms)
+      const delayDebounce = setTimeout(() => {
+        fetchResults();
+      }, 300);
+
+      return () => {
+        active = false;
+        clearTimeout(delayDebounce);
+      };
     } else {
       setSearchResults([]);
       setIsSearching(false);
     }
-  }, [searchQuery, selectedCategoryId, categories]);
+  }, [searchQuery, selectedCategoryId]);
 
   return (
     <header className="w-full font-sans sticky top-0 z-50 shadow-md bg-white">
