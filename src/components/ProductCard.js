@@ -6,7 +6,7 @@ import { getImageUrl, BACKEND_URL } from "../utils/api";
 import { useCart } from "../context/CartContext";
 
 export default function ProductCard({ product }) {
-  const { toggleWishlist, isInWishlist } = useCart();
+  const { toggleWishlist, isInWishlist, addToCart } = useCart();
   
   const oldPrice = parseFloat(product?.old_price || 0);
   const newPrice = parseFloat(product?.new_price || 0);
@@ -60,7 +60,8 @@ export default function ProductCard({ product }) {
         {/* Action Button Overlays (Floating sidebar on hover) */}
         <div className="absolute right-3 top-12 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 z-10">
           <button
-            className="p-2 bg-white hover:bg-[#ffd300] text-gray-700 hover:text-black rounded-full shadow-md transition-colors"
+            onClick={() => addToCart(product)}
+            className="p-2 bg-white hover:bg-[#ffd300] text-gray-700 hover:text-black rounded-full shadow-md transition-colors cursor-pointer"
             title="Add to Cart"
           >
             <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
