@@ -24,6 +24,7 @@ export default function ProductListingWrapper({
   const [isCategoryCollapseOpen, setIsCategoryCollapseOpen] = useState(true);
   const [isPriceCollapseOpen, setIsPriceCollapseOpen] = useState(true);
   const [isRatingCollapseOpen, setIsRatingCollapseOpen] = useState(true);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   // Local state for interactive price inputs
   const [minPrice, setMinPrice] = useState(searchParams.get("min_price") || "");
@@ -141,6 +142,202 @@ export default function ProductListingWrapper({
     }
   }
 
+  const renderSidebarContent = () => {
+    return (
+      <>
+        {/* Collapsible Category Section */}
+        <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
+          <button
+            onClick={() => setIsCategoryCollapseOpen(!isCategoryCollapseOpen)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
+          >
+            <span>Category</span>
+            <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isCategoryCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+          {isCategoryCollapseOpen && (
+            <div className="p-4 flex flex-col gap-3 max-h-72 overflow-y-auto pr-2 scrollbar-thin">
+              {/* Current Parent Category Node */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-1 text-xs font-bold text-gray-900">
+                  <svg className="w-3 h-3 text-gray-400 rotate-90" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                  <span className="truncate">{title}</span>
+                </div>
+                {/* Child Nodes (Subcategories / Childcategories) */}
+                {filterItems.length > 0 && (
+                  <div className="pl-4 flex flex-col gap-2 border-l border-gray-100 ml-1.5 pt-1">
+                    {filterItems.map((item) => {
+                      const itemId = item.id.toString();
+                      const itemName = item.subcategoryName || item.childcategoryName || item.name;
+                      const isChecked = selectedItems.includes(itemId);
+
+                      return (
+                        <label key={item.id} className="flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => handleCheckboxChange(item.id)}
+                            className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                          />
+                          <span className="truncate">{itemName}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Collapsible Price Section */}
+        <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
+          <button
+            onClick={() => setIsPriceCollapseOpen(!isPriceCollapseOpen)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
+          >
+            <span>Price</span>
+            <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isPriceCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+          {isPriceCollapseOpen && (
+            <div className="p-4 flex flex-col gap-3">
+              {priceRanges.length > 0 ? (
+                <div className="flex flex-col gap-2.5">
+                  {priceRanges.map((range, idx) => {
+                    const rangeMinStr = range.start.toString();
+                    const rangeMaxStr = range.end.toString();
+                    const isChecked = searchParams.get("min_price") === rangeMinStr && searchParams.get("max_price") === rangeMaxStr;
+                    const label = `BDT ${range.start.toLocaleString()} - BDT ${range.end.toLocaleString()}`;
+
+                    return (
+                      <label key={idx} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {
+                            if (isChecked) {
+                              updateFilters({ min_price: "", max_price: "" });
+                            } else {
+                              updateFilters({ min_price: rangeMinStr, max_price: rangeMaxStr });
+                            }
+                          }}
+                          className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                        />
+                        <span>{label}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              ) : (
+                <span className="text-xs text-gray-400 font-medium">No price range available</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Collapsible Rating Section */}
+        <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
+          <button
+            onClick={() => setIsRatingCollapseOpen(!isRatingCollapseOpen)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
+          >
+            <span>Rating</span>
+            <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isRatingCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+          {isRatingCollapseOpen && (
+            <div className="p-4 flex flex-col gap-3">
+              <div className="flex flex-col gap-2.5">
+                {[4, 3, 2, 1].map((ratingVal) => {
+                  const isChecked = currentRating === ratingVal.toString();
+                  return (
+                    <label key={ratingVal} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => handleRatingChange(ratingVal)}
+                        className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                      />
+                      <div className="flex items-center gap-1">
+                        <div className="flex items-center">
+                          {Array.from({ length: 5 }, (_, starIdx) => {
+                            const isFilled = starIdx < ratingVal;
+                            return (
+                              <svg
+                                key={starIdx}
+                                className={`w-3.5 h-3.5 ${isFilled ? "text-amber-400 fill-amber-400" : "text-gray-200"}`}
+                                fill={isFilled ? "currentColor" : "none"}
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499c.195-.39.75-.39.945 0l2.32 4.675 5.158.749c.433.063.606.592.293.898l-3.733 3.633.882 5.138c.078.455-.401.8-.802.585l-4.618-2.428-4.618 2.428c-.4.215-.88-.13-.802-.585l.882-5.138-3.733-3.633c-.313-.306-.14-.835.293-.898l5.158-.75 2.32-4.675z" />
+                              </svg>
+                            );
+                          })}
+                        </div>
+                        <span className="ml-1 text-gray-500 font-medium">and above</span>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Collapsible Compare Products Section */}
+        <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white flex flex-col">
+          <div className="w-full px-4 py-3 bg-[#ffd300] font-extrabold text-xs text-black uppercase tracking-wider select-none">
+            Compare Products
+          </div>
+          <div className="p-4 flex flex-col gap-3">
+            {compareItems.length > 0 ? (
+              <div className="flex flex-col gap-2.5">
+                {compareItems.map((item) => (
+                  <div key={item.id} className="flex justify-between items-center gap-2 text-xs border-b border-gray-50 pb-2">
+                    <span className="truncate text-gray-700 font-semibold max-w-[150px]">{item.name}</span>
+                    <button
+                      onClick={() => removeFromCompare(item.id)}
+                      className="text-gray-400 hover:text-[#c29900] transition-colors p-0.5 cursor-pointer"
+                      title="Remove"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+                <div className="flex gap-2 pt-1">
+                  <Link
+                    href="/compare"
+                    className="flex-grow text-center bg-gray-900 text-white text-[11px] font-bold py-1.5 rounded uppercase hover:bg-gray-800 transition-colors"
+                  >
+                    Compare
+                  </Link>
+                  <button
+                    onClick={clearCompare}
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-[11px] font-bold py-1.5 px-3 rounded uppercase transition-colors cursor-pointer"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <span className="text-xs text-gray-400 font-semibold">No products to compare.</span>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
+
   const productList = products.data || [];
   const currentPage = products.current_page || 1;
   const lastPage = products.last_page || 1;
@@ -167,227 +364,87 @@ export default function ProductListingWrapper({
           </h1>
         </div>
 
-        {/* Sorting Dropdown */}
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <label className="text-xs font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">
-            Sort By:
-          </label>
-          <select
-            value={currentSort}
-            onChange={handleSortChange}
-            className="bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 px-3 py-2 rounded-md outline-none cursor-pointer w-full md:w-48 focus:border-[#ffd300]"
+        {/* Sorting & Filter Controls */}
+        <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto mt-2 md:mt-0">
+          {/* Mobile SHOP BY Button */}
+          <button
+            onClick={() => setIsMobileFilterOpen(true)}
+            className="lg:hidden flex items-center justify-center gap-2 bg-[#ffd300] hover:bg-[#e6be00] text-black font-extrabold text-xs px-4 py-2.5 rounded uppercase tracking-wider transition-colors cursor-pointer"
           >
-            <option value="">Default Sorting</option>
-            <option value="1">Newest Arrivals</option>
-            <option value="2">Oldest Products</option>
-            <option value="3">Price: High to Low</option>
-            <option value="4">Price: Low to High</option>
-            <option value="5">Name: A to Z</option>
-            <option value="6">Name: Z to A</option>
-          </select>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+            </svg>
+            <span>Shop By</span>
+          </button>
+
+          <div className="flex items-center gap-2 flex-grow md:flex-grow-0 justify-end">
+            <label className="text-xs font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+              Sort By:
+            </label>
+            <select
+              value={currentSort}
+              onChange={handleSortChange}
+              className="bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 px-3 py-2 rounded-md outline-none cursor-pointer w-full md:w-48 focus:border-[#ffd300]"
+            >
+              <option value="">Default Sorting</option>
+              <option value="1">Newest Arrivals</option>
+              <option value="2">Oldest Products</option>
+              <option value="3">Price: High to Low</option>
+              <option value="4">Price: Low to High</option>
+              <option value="5">Name: A to Z</option>
+              <option value="6">Name: Z to A</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {/* Main Filter + Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         
-        {/* Left Filters Sidebar */}
-        <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
+        {/* Left Filters Sidebar (Desktop) */}
+        <aside className="hidden lg:flex flex-col gap-5 lg:sticky lg:top-24">
           {/* Main Title Heading (SHOP BY) */}
           <div className="bg-[#ffd300] text-black font-extrabold text-xs px-4 py-3 uppercase tracking-wider rounded-t-lg select-none">
             Shop By
           </div>
-
-          {/* Collapsible Category Section */}
-          <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
-            <button
-              onClick={() => setIsCategoryCollapseOpen(!isCategoryCollapseOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
-            >
-              <span>Category</span>
-              <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isCategoryCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-              </svg>
-            </button>
-            {isCategoryCollapseOpen && (
-              <div className="p-4 flex flex-col gap-3 max-h-72 overflow-y-auto pr-2 scrollbar-thin">
-                {/* Current Parent Category Node */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-1 text-xs font-bold text-gray-900">
-                    <svg className="w-3 h-3 text-gray-400 rotate-90" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                    <span className="truncate">{title}</span>
-                  </div>
-                  {/* Child Nodes (Subcategories / Childcategories) */}
-                  {filterItems.length > 0 && (
-                    <div className="pl-4 flex flex-col gap-2 border-l border-gray-100 ml-1.5 pt-1">
-                      {filterItems.map((item) => {
-                        const itemId = item.id.toString();
-                        const itemName = item.subcategoryName || item.childcategoryName || item.name;
-                        const isChecked = selectedItems.includes(itemId);
-
-                        return (
-                          <label key={item.id} className="flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              onChange={() => handleCheckboxChange(item.id)}
-                              className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
-                            />
-                            <span className="truncate">{itemName}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Collapsible Price Section */}
-          <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
-            <button
-              onClick={() => setIsPriceCollapseOpen(!isPriceCollapseOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
-            >
-              <span>Price</span>
-              <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isPriceCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-              </svg>
-            </button>
-            {isPriceCollapseOpen && (
-              <div className="p-4 flex flex-col gap-3">
-                {priceRanges.length > 0 ? (
-                  <div className="flex flex-col gap-2.5">
-                    {priceRanges.map((range, idx) => {
-                      const rangeMinStr = range.start.toString();
-                      const rangeMaxStr = range.end.toString();
-                      const isChecked = searchParams.get("min_price") === rangeMinStr && searchParams.get("max_price") === rangeMaxStr;
-                      const label = `BDT ${range.start.toLocaleString()} - BDT ${range.end.toLocaleString()}`;
-
-                      return (
-                        <label key={idx} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => {
-                              if (isChecked) {
-                                updateFilters({ min_price: "", max_price: "" });
-                              } else {
-                                updateFilters({ min_price: rangeMinStr, max_price: rangeMaxStr });
-                              }
-                            }}
-                            className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
-                          />
-                          <span>{label}</span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <span className="text-xs text-gray-400 font-medium">No price range available</span>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Collapsible Rating Section */}
-          <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
-            <button
-              onClick={() => setIsRatingCollapseOpen(!isRatingCollapseOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
-            >
-              <span>Rating</span>
-              <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isRatingCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-              </svg>
-            </button>
-            {isRatingCollapseOpen && (
-              <div className="p-4 flex flex-col gap-3">
-                <div className="flex flex-col gap-2.5">
-                  {[4, 3, 2, 1].map((ratingVal) => {
-                    const isChecked = currentRating === ratingVal.toString();
-                    return (
-                      <label key={ratingVal} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-[#c29900] cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => handleRatingChange(ratingVal)}
-                          className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-3.5 h-3.5 cursor-pointer"
-                        />
-                        <div className="flex items-center gap-1">
-                          <div className="flex items-center">
-                            {Array.from({ length: 5 }, (_, starIdx) => {
-                              const isFilled = starIdx < ratingVal;
-                              return (
-                                <svg
-                                  key={starIdx}
-                                  className={`w-3.5 h-3.5 ${isFilled ? "text-amber-400 fill-amber-400" : "text-gray-200"}`}
-                                  fill={isFilled ? "currentColor" : "none"}
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499c.195-.39.75-.39.945 0l2.32 4.675 5.158.749c.433.063.606.592.293.898l-3.733 3.633.882 5.138c.078.455-.401.8-.802.585l-4.618-2.428-4.618 2.428c-.4.215-.88-.13-.802-.585l.882-5.138-3.733-3.633c-.313-.306-.14-.835.293-.898l5.158-.75 2.32-4.675z" />
-                                </svg>
-                              );
-                            })}
-                          </div>
-                          <span className="ml-1 text-gray-500 font-medium">and above</span>
-                        </div>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Collapsible Compare Products Section */}
-          <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white flex flex-col">
-            <div className="w-full px-4 py-3 bg-[#ffd300] font-extrabold text-xs text-black uppercase tracking-wider select-none">
-              Compare Products
-            </div>
-            <div className="p-4 flex flex-col gap-3">
-              {compareItems.length > 0 ? (
-                <div className="flex flex-col gap-2.5">
-                  {compareItems.map((item) => (
-                    <div key={item.id} className="flex justify-between items-center gap-2 text-xs border-b border-gray-50 pb-2">
-                      <span className="truncate text-gray-700 font-semibold max-w-[150px]">{item.name}</span>
-                      <button
-                        onClick={() => removeFromCompare(item.id)}
-                        className="text-gray-400 hover:text-[#c29900] transition-colors p-0.5 cursor-pointer"
-                        title="Remove"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
-                  <div className="flex gap-2 pt-1">
-                    <Link
-                      href="/compare"
-                      className="flex-grow text-center bg-gray-900 text-white text-[11px] font-bold py-1.5 rounded uppercase hover:bg-gray-800 transition-colors"
-                    >
-                      Compare
-                    </Link>
-                    <button
-                      onClick={clearCompare}
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-[11px] font-bold py-1.5 px-3 rounded uppercase transition-colors cursor-pointer"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <span className="text-xs text-gray-400 font-semibold">No products to compare.</span>
-              )}
-            </div>
-          </div>
+          {renderSidebarContent()}
         </aside>
+
+        {/* Mobile Filters Drawer Overlay */}
+        {isMobileFilterOpen && (
+          <div className="fixed inset-0 z-50 flex lg:hidden">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-black/40 transition-opacity"
+              onClick={() => setIsMobileFilterOpen(false)}
+            ></div>
+
+            {/* Drawer Content */}
+            <div className="relative flex w-full max-w-xs flex-col bg-white py-4 pb-12 shadow-xl overflow-y-auto z-10">
+              <div className="flex items-center justify-between px-4 border-b border-gray-100 pb-3 mb-4">
+                <h2 className="text-sm font-extrabold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                  <svg className="w-4 h-4 text-[#c29900]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                  </svg>
+                  <span>Filter By</span>
+                </h2>
+                <button
+                  onClick={() => setIsMobileFilterOpen(false)}
+                  className="rounded-md p-1 text-gray-400 hover:text-gray-500 cursor-pointer"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Sidebar content inside drawer */}
+              <div className="px-4 flex flex-col gap-5">
+                {renderSidebarContent()}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Right Product Grid */}
         <div className="lg:col-span-3 flex flex-col gap-6">
