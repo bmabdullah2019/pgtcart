@@ -86,15 +86,15 @@ export default async function Home() {
                 return (
                   <div 
                     key={cat.id} 
-                    className={`relative group/side font-semibold text-gray-700 hover:text-[#c29900] ${isFirst ? 'rounded-t-lg' : ''} ${isLast ? 'rounded-b-lg' : ''}`}
+                    className={`relative group/side font-semibold text-gray-700 hover:text-black ${isFirst ? 'rounded-t-lg' : ''} ${isLast ? 'rounded-b-lg' : ''}`}
                   >
                     <Link
                       href={`/category/${cat.slug}`}
-                      className={`flex justify-between items-center py-3 px-4 hover:bg-amber-50/40 transition-colors ${isFirst ? 'rounded-t-lg' : ''} ${isLast ? 'rounded-b-lg' : ''}`}
+                      className={`flex justify-between items-center py-3.5 px-4 hover:bg-[#ffd300] transition-colors ${isFirst ? 'rounded-t-lg' : ''} ${isLast ? 'rounded-b-lg' : ''}`}
                     >
                       <span>{cat.name}</span>
                       {cat.menusubcategories?.length > 0 && (
-                        <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3 text-gray-400 group-hover/side:text-black" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       )}
@@ -107,7 +107,7 @@ export default async function Home() {
                         <div key={sub.id} className="relative group/side-child px-2">
                           <Link
                             href={`/subcategory/${sub.slug}`}
-                            className="flex justify-between items-center py-2 px-2 text-xs hover:bg-amber-50 rounded hover:text-[#c29900]"
+                            className="flex justify-between items-center py-2.5 px-2 text-xs hover:bg-[#ffd300] rounded hover:text-black transition-colors"
                           >
                             <span>{sub.subcategoryName}</span>
                             {sub.menuchildcategories?.length > 0 && (
@@ -124,7 +124,7 @@ export default async function Home() {
                                 <Link
                                   key={child.id}
                                   href={`/childcategory/${child.slug}`}
-                                  className="block py-2 px-4 text-xs hover:bg-amber-50 rounded hover:text-[#c29900]"
+                                  className="block py-2 px-4 text-xs hover:bg-[#ffd300] rounded hover:text-black transition-colors"
                                 >
                                   {child.childcategoryName}
                                 </Link>
