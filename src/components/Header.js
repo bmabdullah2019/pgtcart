@@ -274,7 +274,7 @@ export default function Header({ config, contact, categories, pages }) {
                   <div key={cat.id} className="relative group/sub">
                     <Link
                       href={`/category/${cat.slug}`}
-                      className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-[#ffd300] hover:text-black transition-colors"
+                      className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold group-hover/sub:bg-[#ffd300] group-hover/sub:text-black transition-colors"
                       onClick={() => setIsCategoryMenuOpen(false)}
                     >
                       <span className="truncate">{cat.name}</span>
@@ -292,7 +292,7 @@ export default function Header({ config, contact, categories, pages }) {
                           <div key={sub.id} className="relative group/child">
                             <Link
                               href={`/subcategory/${sub.slug}`}
-                              className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-[#ffd300] hover:text-black"
+                              className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold group-hover/child:bg-[#ffd300] group-hover/child:text-black"
                               onClick={() => setIsCategoryMenuOpen(false)}
                             >
                               <span className="truncate">{sub.subcategoryName}</span>
