@@ -496,12 +496,18 @@ export default function ProductListingWrapper({
               )}
             </>
           ) : (
-            <div className="bg-white border border-gray-100 rounded-lg p-12 text-center text-gray-400 shadow-xs">
-              <svg className="w-16 h-16 text-gray-200 mb-4 mx-auto fill-none stroke-current" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25-2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-              </svg>
-              <h3 className="text-sm font-bold text-gray-500 mb-1">No products found</h3>
-              <p className="text-xs">Try clearing some filters or search for another category.</p>
+            <div className="bg-white border border-gray-100 rounded-2xl p-16 text-center shadow-xs flex flex-col items-center max-w-lg mx-auto my-8">
+              <div className="relative mb-6">
+                <div className="absolute inset-0 bg-[#ffd300]/10 blur-xl rounded-full w-20 h-20 -translate-x-1/4 -translate-y-1/4 select-none pointer-events-none"></div>
+                <svg className="relative w-16 h-16 text-[#ffd300] mx-auto fill-none stroke-current" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25-2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                </svg>
+              </div>
+              <h3 className="text-base font-extrabold text-gray-800 mb-2">কোনো প্রোডাক্ট পাওয়া যায়নি / No Products Found</h3>
+              <p className="text-xs text-gray-400 max-w-sm leading-relaxed">
+                অনুগ্রহ করে ফিল্টারগুলো পরিবর্তন করে অথবা অন্য কোনো ক্যাটাগরি সিলেক্ট করে পুনরায় চেষ্টা করুন।
+                <span className="block mt-1 font-medium">Try clearing some filters or search for another category.</span>
+              </p>
             </div>
           )}
         </div>
