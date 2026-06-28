@@ -157,8 +157,8 @@ export default async function Home() {
             });
           }
           return (
-            <section className="bg-white border-t border-l border-gray-200 md:border md:rounded-lg shadow-sm overflow-hidden">
-              <div className="grid grid-cols-4 md:flex md:overflow-x-auto md:scrollbar-none md:divide-x md:divide-gray-200">
+            <section className="bg-white border border-gray-200 md:rounded-lg shadow-sm overflow-hidden">
+              <div className="grid grid-cols-4 md:flex md:overflow-x-auto md:scrollbar-none">
                 {displayCategories.map((cat) => {
                   if (cat.isEmpty) {
                     return (
@@ -172,7 +172,7 @@ export default async function Home() {
                     <Link
                       key={cat.id}
                       href={`/category/${cat.slug}`}
-                      className="flex flex-col items-center justify-center p-3 md:p-4 text-center hover:bg-amber-50/30 transition-all duration-200 group w-full border-r border-b border-gray-200 md:border-none md:min-w-[125px] md:flex-1"
+                      className="flex flex-col items-center justify-center p-3 md:p-4 text-center hover:bg-amber-50/30 transition-all duration-200 group w-full border-r border-b border-gray-200 md:border-r md:border-b-0 md:border-gray-200 md:min-w-[125px] md:flex-1 last:border-r-0"
                     >
                       <img
                         src={getImageUrl(cat.image)}
