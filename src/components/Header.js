@@ -274,12 +274,12 @@ export default function Header({ config, contact, categories, pages }) {
                   <div key={cat.id} className="relative group/sub">
                     <Link
                       href={`/category/${cat.slug}`}
-                      className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-amber-50 hover:text-[#c29900] transition-colors"
+                      className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-[#ffd300] hover:text-black transition-colors"
                       onClick={() => setIsCategoryMenuOpen(false)}
                     >
                       <span className="truncate">{cat.name}</span>
                       {cat.menusubcategories?.length > 0 && (
-                        <svg className="w-3 h-3 text-gray-400 group-hover/sub:text-[#c29900]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3 text-gray-400 group-hover/sub:text-black" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       )}
@@ -292,12 +292,12 @@ export default function Header({ config, contact, categories, pages }) {
                           <div key={sub.id} className="relative group/child">
                             <Link
                               href={`/subcategory/${sub.slug}`}
-                              className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-amber-50 hover:text-[#c29900]"
+                              className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-[#ffd300] hover:text-black"
                               onClick={() => setIsCategoryMenuOpen(false)}
                             >
                               <span className="truncate">{sub.subcategoryName}</span>
                               {sub.menuchildcategories?.length > 0 && (
-                                <svg className="w-3 h-3 text-gray-400 group-hover/child:text-[#c29900]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                <svg className="w-3 h-3 text-gray-400 group-hover/child:text-black" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
                               )}
@@ -310,7 +310,7 @@ export default function Header({ config, contact, categories, pages }) {
                                   <Link
                                     key={child.id}
                                     href={`/childcategory/${child.slug}`}
-                                    className="block px-4 py-2.5 text-xs font-medium hover:bg-amber-50 hover:text-[#c29900] truncate"
+                                    className="block px-4 py-2.5 text-xs font-medium hover:bg-[#ffd300] hover:text-black truncate"
                                     onClick={() => setIsCategoryMenuOpen(false)}
                                   >
                                     {child.childcategoryName}
@@ -329,13 +329,13 @@ export default function Header({ config, contact, categories, pages }) {
           </div>
 
           {/* Links */}
-          <nav className="flex-grow flex items-center justify-center gap-6 md:gap-8 px-6 text-xs font-extrabold uppercase tracking-wider h-full">
+          <nav className="flex-grow flex items-center justify-center gap-3 lg:gap-5 px-4 text-[10px] lg:text-xs font-extrabold uppercase tracking-wider h-full">
             {pages?.map((page) => (
-              <Link key={page.id} href={`/page/${page.slug}`} className="hover:text-gray-700 transition-colors">
+              <Link key={page.id} href={`/page/${page.slug}`} className="hover:text-gray-700 transition-colors whitespace-nowrap">
                 {page.name}
               </Link>
             ))}
-            <Link href="/contact" className="hover:text-gray-700 transition-colors">
+            <Link href="/contact" className="hover:text-gray-700 transition-colors whitespace-nowrap">
               Contact Us
             </Link>
           </nav>
@@ -480,7 +480,7 @@ export default function Header({ config, contact, categories, pages }) {
               <div key={cat.id} className="border-b border-gray-50 last:border-0">
                 <Link
                   href={`/category/${cat.slug}`}
-                  className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-gray-50"
+                  className="flex items-center justify-between px-4 py-2.5 text-xs font-semibold hover:bg-[#ffd300] hover:text-black"
                   onClick={() => setIsCategoryMenuOpen(false)}
                 >
                   <span>{cat.name}</span>
