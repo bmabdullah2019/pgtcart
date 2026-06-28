@@ -52,9 +52,69 @@ export default function CheckoutPage() {
     fetchDetails();
   }, []);
 
-  // Compute selected shipping charge
-  const selectedArea = shippingCharges.find((sc) => sc.id.toString() === selectedAreaId);
-  const shippingCost = selectedArea ? parseFloat(selectedArea.amount) : 0;
+  const [shippingCost, setShippingCost] = useState(0);
+  const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
+
+  // Dynamic Shipping Calculation from Backend
+  useEffect(() => {
+    if (!selectedAreaId || cartItems.length === 0) {
+      setShippingCost(0);
+      return;
+    }
+
+    let isMounted = true;
+    async function calculateShipping() {
+      setIsCalculatingShipping(true);
+      try {
+        const payloadItems = cartItems.map((item) => ({
+          id: item.id,
+          qty: item.qty,
+        }));
+
+        const res = await fetch(`${API_BASE}/shipping/calculate`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            area: parseInt(selectedAreaId),
+            items: payloadItems,
+          }),
+        });
+
+        if (!res.ok) throw new Error("Failed to calculate shipping");
+        const json = await res.json();
+        
+        if (isMounted) {
+          if (json.success) {
+            setShippingCost(parseFloat(json.shipping_charge));
+          } else {
+            // Fallback to local calculation if API reports failure
+            const selectedArea = shippingCharges.find((sc) => sc.id.toString() === selectedAreaId);
+            setShippingCost(selectedArea ? parseFloat(selectedArea.amount) : 0);
+          }
+        }
+      } catch (err) {
+        console.error("Shipping calculate error:", err);
+        // Fallback to local calculation on network error
+        const selectedArea = shippingCharges.find((sc) => sc.id.toString() === selectedAreaId);
+        if (isMounted) {
+          setShippingCost(selectedArea ? parseFloat(selectedArea.amount) : 0);
+        }
+      } finally {
+        if (isMounted) {
+          setIsCalculatingShipping(false);
+        }
+      }
+    }
+
+    calculateShipping();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedAreaId, cartItems, shippingCharges]);
+
   const orderTotal = cartSubtotal + shippingCost;
 
   const handleSubmit = async (e) => {
@@ -393,7 +453,13 @@ export default function CheckoutPage() {
             <div className="flex justify-between">
               <span>Shipping Charge</span>
               <span className="text-gray-950 font-bold">
-                {shippingCost > 0 ? `৳ ${shippingCost.toLocaleString()}` : "Select area"}
+                {isCalculatingShipping ? (
+                  <span className="text-gray-400 text-[10px] animate-pulse">Calculating...</span>
+                ) : shippingCost > 0 ? (
+                  `৳ ${shippingCost.toLocaleString()}`
+                ) : (
+                  "Select area"
+                )}
               </span>
             </div>
             <div className="flex justify-between items-center text-sm font-extrabold border-t border-gray-100 pt-2 text-gray-950">
