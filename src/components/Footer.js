@@ -2,12 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { getImageUrl, BACKEND_URL } from "../utils/api";
 
 export default function Footer({ config, contact, leftMenu, rightMenu, socialLinks }) {
-  const pathname = usePathname();
-  if (pathname === "/login") return null;
   const siteName = config?.name || "Aminsuk";
   const footerLogo = config?.white_logo || config?.dark_logo || null;
   const address = contact?.address || "";
