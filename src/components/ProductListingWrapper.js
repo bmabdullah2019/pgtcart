@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import ProductCard from "./ProductCard";
+import { useCart } from "../context/CartContext";
 
 export default function ProductListingWrapper({
   title,
@@ -18,6 +19,12 @@ export default function ProductListingWrapper({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const { compareItems, removeFromCompare, clearCompare } = useCart();
+
+  const [isCategoryCollapseOpen, setIsCategoryCollapseOpen] = useState(true);
+  const [isPriceCollapseOpen, setIsPriceCollapseOpen] = useState(true);
+  const [isRatingCollapseOpen, setIsRatingCollapseOpen] = useState(true);
+
   // Local state for interactive price inputs
   const [minPrice, setMinPrice] = useState(searchParams.get("min_price") || "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("max_price") || "");
@@ -25,6 +32,7 @@ export default function ProductListingWrapper({
   // Synced states for checkboxes and sorting from URL
   const selectedItems = searchParams.getAll(filterKey);
   const currentSort = searchParams.get("sort") || "";
+  const currentRating = searchParams.get("rating") || "";
 
   // Synchronize local price inputs if URL searchParams change
   useEffect(() => {
@@ -89,6 +97,50 @@ export default function ProductListingWrapper({
     router.push(`${pathname}?${params.toString()}`);
   };
 
+  const handleRatingChange = (ratingVal) => {
+    const valString = ratingVal.toString();
+    const newRating = currentRating === valString ? "" : valString;
+    updateFilters({ rating: newRating });
+  };
+
+  // Generate 6 price range checkboxes dynamically
+  const minPriceBoundNum = parseFloat(minPriceBound) || 0;
+  const maxPriceBoundNum = parseFloat(maxPriceBound) || 100000;
+  const priceRanges = [];
+  
+  if (maxPriceBoundNum > minPriceBoundNum) {
+    const steps = 6;
+    const rawStep = (maxPriceBoundNum - minPriceBoundNum) / steps;
+    
+    // Round step to nice round numbers depending on scale
+    let step = 100;
+    if (rawStep > 10000) {
+      step = Math.ceil(rawStep / 10000) * 10000;
+    } else if (rawStep > 5000) {
+      step = Math.ceil(rawStep / 5000) * 5000;
+    } else if (rawStep > 1000) {
+      step = Math.ceil(rawStep / 1000) * 1000;
+    } else if (rawStep > 500) {
+      step = Math.ceil(rawStep / 500) * 500;
+    } else if (rawStep > 100) {
+      step = Math.ceil(rawStep / 100) * 100;
+    } else if (rawStep > 50) {
+      step = Math.ceil(rawStep / 50) * 50;
+    } else {
+      step = Math.ceil(rawStep / 10) * 10;
+    }
+    
+    for (let i = 0; i < steps; i++) {
+      const start = minPriceBoundNum + i * step;
+      if (start >= maxPriceBoundNum) break;
+      const end = Math.min(start + step, maxPriceBoundNum);
+      priceRanges.push({
+        start: Math.round(start),
+        end: Math.round(end),
+      });
+    }
+  }
+
   const productList = products.data || [];
   const currentPage = products.current_page || 1;
   const lastPage = products.last_page || 1;
@@ -140,82 +192,200 @@ export default function ProductListingWrapper({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         
         {/* Left Filters Sidebar */}
-        <aside className="bg-white border border-gray-100 rounded-lg p-5 shadow-xs flex flex-col gap-6 lg:sticky lg:top-24">
-          
-          {/* Subcategories/Childcategories list */}
-          {filterItems.length > 0 && (
-            <div>
-              <h3 className="text-xs uppercase font-extrabold text-gray-900 tracking-wider mb-4 border-b border-gray-50 pb-2">
-                Filter by Category
-              </h3>
-              <div className="flex flex-col gap-2.5 max-h-60 overflow-y-auto pr-2 scrollbar-thin">
-                {filterItems.map((item) => {
-                  const itemId = item.id.toString();
-                  const itemName = item.subcategoryName || item.childcategoryName || item.name;
-                  const isChecked = selectedItems.includes(itemId);
+        <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
+          {/* Main Title Heading (SHOP BY) */}
+          <div className="bg-[#e31e24] text-white font-extrabold text-xs px-4 py-3 uppercase tracking-wider rounded-t-lg select-none">
+            Shop By
+          </div>
 
-                  return (
-                    <label key={item.id} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-black cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => handleCheckboxChange(item.id)}
-                        className="rounded text-[#c29900] focus:ring-[#ffd300] border-gray-300 w-4 h-4 cursor-pointer"
-                      />
-                      <span>{itemName}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          {/* Collapsible Category Section */}
+          <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
+            <button
+              onClick={() => setIsCategoryCollapseOpen(!isCategoryCollapseOpen)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
+            >
+              <span>Category</span>
+              <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isCategoryCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            {isCategoryCollapseOpen && (
+              <div className="p-4 flex flex-col gap-3 max-h-72 overflow-y-auto pr-2 scrollbar-thin">
+                {/* Current Parent Category Node */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-1 text-xs font-bold text-gray-900">
+                    <svg className="w-3 h-3 text-gray-400 rotate-90" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                    <span className="truncate">{title}</span>
+                  </div>
+                  {/* Child Nodes (Subcategories / Childcategories) */}
+                  {filterItems.length > 0 && (
+                    <div className="pl-4 flex flex-col gap-2 border-l border-gray-100 ml-1.5 pt-1">
+                      {filterItems.map((item) => {
+                        const itemId = item.id.toString();
+                        const itemName = item.subcategoryName || item.childcategoryName || item.name;
+                        const isChecked = selectedItems.includes(itemId);
 
-          {/* Price Range Filter */}
-          <div>
-            <h3 className="text-xs uppercase font-extrabold text-gray-900 tracking-wider mb-4 border-b border-gray-50 pb-2">
-              Filter by Price (BDT)
-            </h3>
-            <form onSubmit={handlePriceSubmit} className="flex flex-col gap-3">
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Min Price</label>
-                  <input
-                    type="number"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    placeholder={minPriceBound}
-                    className="w-full bg-gray-50 border border-gray-200 text-xs font-semibold px-2 py-1.5 rounded outline-none focus:border-[#ffd300]"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Max Price</label>
-                  <input
-                    type="number"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    placeholder={maxPriceBound}
-                    className="w-full bg-gray-50 border border-gray-200 text-xs font-semibold px-2 py-1.5 rounded outline-none focus:border-[#ffd300]"
-                  />
+                        return (
+                          <label key={item.id} className="flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-red-600 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => handleCheckboxChange(item.id)}
+                              className="rounded text-[#e31e24] focus:ring-[#e31e24] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                            />
+                            <span className="truncate">{itemName}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="flex-grow bg-[#ffd300] text-black py-1.5 text-xs font-bold rounded uppercase tracking-wider hover:bg-[#e6be00] transition-colors"
-                >
-                  Apply
-                </button>
-                {(searchParams.get("min_price") || searchParams.get("max_price")) && (
-                  <button
-                    type="button"
-                    onClick={handlePriceClear}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 px-3 text-xs font-bold rounded"
-                  >
-                    Clear
-                  </button>
+            )}
+          </div>
+
+          {/* Collapsible Price Section */}
+          <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
+            <button
+              onClick={() => setIsPriceCollapseOpen(!isPriceCollapseOpen)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
+            >
+              <span>Price</span>
+              <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isPriceCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            {isPriceCollapseOpen && (
+              <div className="p-4 flex flex-col gap-3">
+                {priceRanges.length > 0 ? (
+                  <div className="flex flex-col gap-2.5">
+                    {priceRanges.map((range, idx) => {
+                      const rangeMinStr = range.start.toString();
+                      const rangeMaxStr = range.end.toString();
+                      const isChecked = searchParams.get("min_price") === rangeMinStr && searchParams.get("max_price") === rangeMaxStr;
+                      const label = `BDT ${range.start.toLocaleString()} - BDT ${range.end.toLocaleString()}`;
+
+                      return (
+                        <label key={idx} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-red-600 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => {
+                              if (isChecked) {
+                                updateFilters({ min_price: "", max_price: "" });
+                              } else {
+                                updateFilters({ min_price: rangeMinStr, max_price: rangeMaxStr });
+                              }
+                            }}
+                            className="rounded text-[#e31e24] focus:ring-[#e31e24] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                          />
+                          <span>{label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <span className="text-xs text-gray-400 font-medium">No price range available</span>
                 )}
               </div>
-            </form>
+            )}
+          </div>
+
+          {/* Collapsible Rating Section */}
+          <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white">
+            <button
+              onClick={() => setIsRatingCollapseOpen(!isRatingCollapseOpen)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100 font-extrabold text-xs text-gray-800 uppercase tracking-wider select-none cursor-pointer"
+            >
+              <span>Rating</span>
+              <svg className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isRatingCollapseOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            {isRatingCollapseOpen && (
+              <div className="p-4 flex flex-col gap-3">
+                <div className="flex flex-col gap-2.5">
+                  {[4, 3, 2, 1].map((ratingVal) => {
+                    const isChecked = currentRating === ratingVal.toString();
+                    return (
+                      <label key={ratingVal} className="flex items-center gap-2.5 text-xs font-semibold text-gray-600 hover:text-red-600 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => handleRatingChange(ratingVal)}
+                          className="rounded text-[#e31e24] focus:ring-[#e31e24] border-gray-300 w-3.5 h-3.5 cursor-pointer"
+                        />
+                        <div className="flex items-center gap-1">
+                          <div className="flex items-center">
+                            {Array.from({ length: 5 }, (_, starIdx) => {
+                              const isFilled = starIdx < ratingVal;
+                              return (
+                                <svg
+                                  key={starIdx}
+                                  className={`w-3.5 h-3.5 ${isFilled ? "text-amber-400 fill-amber-400" : "text-gray-200"}`}
+                                  fill={isFilled ? "currentColor" : "none"}
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499c.195-.39.75-.39.945 0l2.32 4.675 5.158.749c.433.063.606.592.293.898l-3.733 3.633.882 5.138c.078.455-.401.8-.802.585l-4.618-2.428-4.618 2.428c-.4.215-.88-.13-.802-.585l.882-5.138-3.733-3.633c-.313-.306-.14-.835.293-.898l5.158-.75 2.32-4.675z" />
+                                </svg>
+                              );
+                            })}
+                          </div>
+                          <span className="ml-1 text-gray-500 font-medium">and above</span>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Collapsible Compare Products Section */}
+          <div className="border border-gray-100 rounded-lg overflow-hidden shadow-xs bg-white flex flex-col">
+            <div className="w-full px-4 py-3 bg-[#e31e24] font-extrabold text-xs text-white uppercase tracking-wider select-none">
+              Compare Products
+            </div>
+            <div className="p-4 flex flex-col gap-3">
+              {compareItems.length > 0 ? (
+                <div className="flex flex-col gap-2.5">
+                  {compareItems.map((item) => (
+                    <div key={item.id} className="flex justify-between items-center gap-2 text-xs border-b border-gray-50 pb-2">
+                      <span className="truncate text-gray-700 font-semibold max-w-[150px]">{item.name}</span>
+                      <button
+                        onClick={() => removeFromCompare(item.id)}
+                        className="text-gray-400 hover:text-red-600 transition-colors p-0.5 cursor-pointer"
+                        title="Remove"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                  <div className="flex gap-2 pt-1">
+                    <Link
+                      href="/compare"
+                      className="flex-grow text-center bg-gray-900 text-white text-[11px] font-bold py-1.5 rounded uppercase hover:bg-gray-800 transition-colors"
+                    >
+                      Compare
+                    </Link>
+                    <button
+                      onClick={clearCompare}
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-[11px] font-bold py-1.5 px-3 rounded uppercase transition-colors cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <span className="text-xs text-gray-400 font-semibold">No products to compare.</span>
+              )}
+            </div>
           </div>
         </aside>
 
