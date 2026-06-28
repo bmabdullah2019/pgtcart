@@ -42,7 +42,7 @@ export default function Header({ config, contact, categories, pages }) {
 
   const { cartItems, cartCount, cartSubtotal, updateQty, removeFromCart } = useCart();
 
-  const siteName = config?.name || "Aminsuk";
+  const siteName = config?.name || "Sakura Power";
   const headerLogo = config?.white_logo || config?.dark_logo || null;
   const hotline = contact?.hotline || "096 1144 1144";
   const headerContainerClass = "max-w-7xl mx-auto w-full px-4 md:px-8";

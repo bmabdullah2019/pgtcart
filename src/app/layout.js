@@ -1,5 +1,5 @@
 import "./globals.css";
-import { API_BASE } from "../utils/api";
+import { API_BASE, getImageUrl } from "../utils/api";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/CartContext";
@@ -7,10 +7,25 @@ import { Suspense } from "react";
 
 export const revalidate = 300;
 
-export const metadata = {
-  title: "Sakura e-Commerce Store",
-  description: "Next.js-powered public storefront connected to Laravel admin backend",
-};
+export async function generateMetadata() {
+  const data = await getGlobalData();
+  const config = data?.config;
+  const siteName = config?.name || "Sakura Power";
+  const faviconUrl = config?.favicon ? getImageUrl(config.favicon) : "/favicon.ico";
+
+  return {
+    title: {
+      default: siteName,
+      template: `%s | ${siteName}`,
+    },
+    description: config?.meta_description || config?.description || `${siteName} storefront`,
+    icons: {
+      icon: faviconUrl,
+      shortcut: faviconUrl,
+      apple: faviconUrl,
+    },
+  };
+}
 
 async function getGlobalData() {
   const fetchAPI = async (endpoint, revalidate = 300) => {
