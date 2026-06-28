@@ -148,28 +148,47 @@ export default async function Home() {
         </section>
 
         {/* Category Icons Grid Strip */}
-        {categories && categories.length > 0 && (
-          <section className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-            <div className="flex overflow-x-auto scrollbar-none divide-x divide-gray-200">
-              {categories.slice(0, 8).map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/category/${cat.slug}`}
-                  className="flex flex-col items-center justify-center p-4 text-center hover:bg-amber-50/30 transition-all duration-200 group w-full min-w-[125px] md:min-w-0 md:flex-1"
-                >
-                  <img
-                    src={getImageUrl(cat.image)}
-                    alt={cat.name}
-                    className="h-10 w-10 object-contain mb-3 group-hover:scale-105 transition-transform duration-200"
-                  />
-                  <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-[#c29900] leading-tight group-hover:text-[#b08b00]">
-                    {cat.name}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+        {categories && categories.length > 0 && (() => {
+          const displayCategories = [...categories.slice(0, 8)];
+          while (displayCategories.length < 8) {
+            displayCategories.push({
+              id: `empty-placeholder-${displayCategories.length}`,
+              isEmpty: true
+            });
+          }
+          return (
+            <section className="bg-white border-t border-l border-gray-200 md:border md:rounded-lg shadow-sm overflow-hidden">
+              <div className="grid grid-cols-4 md:flex md:overflow-x-auto md:scrollbar-none md:divide-x md:divide-gray-200">
+                {displayCategories.map((cat) => {
+                  if (cat.isEmpty) {
+                    return (
+                      <div
+                        key={cat.id}
+                        className="border-r border-b border-gray-200 md:hidden"
+                      />
+                    );
+                  }
+                  return (
+                    <Link
+                      key={cat.id}
+                      href={`/category/${cat.slug}`}
+                      className="flex flex-col items-center justify-center p-3 md:p-4 text-center hover:bg-amber-50/30 transition-all duration-200 group w-full border-r border-b border-gray-200 md:border-none md:min-w-[125px] md:flex-1"
+                    >
+                      <img
+                        src={getImageUrl(cat.image)}
+                        alt={cat.name}
+                        className="h-8 w-8 md:h-10 md:w-10 object-contain mb-2 md:mb-3 group-hover:scale-105 transition-transform duration-200"
+                      />
+                      <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#c29900] leading-tight group-hover:text-[#b08b00]">
+                        {cat.name}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })()}
 
         {/* Hot Deal / Best Seller Slider */}
         {hotdeals && hotdeals.length > 0 && (
